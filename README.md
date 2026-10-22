@@ -119,14 +119,15 @@ every coprime pair out to distance 300, eye on the ground. This is
 **Euclid's orchard**. No tree hides another, since each coprime point is the
 first on its ray, and the trees left out are exactly the ones that would
 have been hidden: a full orchard looks just the same from here. The bottom
-panel is the stretch between the trees at (1, 1) and (2, 1), turned to run 1
-to 2 like the number line.
+panel is the stretch between the trees at (1, 1) and (1, 2), where the ratio
+y/x runs 1 to 2 left to right, just as the number line does.
 
 The orchard is the number line seen in perspective:
 
 - **Direction is the ratio.** The tree at (x, y) stands at bearing
-  atan(y/x). Between (1, 1) and (2, 1), 45° to 26.6°, you see every ratio
-  x/y from 1 to 2: the octave. The fifth stands at 33.7°, the fourth at 36.9°.
+  atan(y/x). Between (1, 1) and (1, 2), 45° to 63.4°, you see every ratio
+  y/x from 1 to 2 in order: the octave. The fifth, 3:2, is the tree at (2, 3),
+  at 56.3°; the fourth, 4:3, is the tree at (3, 4), at 53.1°.
 - **Size is the height.** A tree at distance d = √(p² + q²) is about 1/d tall
   in view and 1/d wide, so the share of the view it fills is 1/(p² + q²):
   the height of its line on the number line. On a log scale the two have the
