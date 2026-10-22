@@ -1,5 +1,8 @@
 # Coprime pairs and musical intervals
 
+**[Open the page](https://gernreich.github.io/coprime-intervals/)**: pick any
+square of the grid to see its ray and the Turk's head knot it makes.
+
 Two pictures of one fact. A pair of whole numbers (x, y) is **coprime** when
 gcd(x, y) = 1, that is, when x/y is already in lowest terms. Put the coprime
 pairs on a grid and they form rays from the corner. Put the fractions between 1
@@ -11,7 +14,8 @@ Everything here is made by one script:
 python3 coprime_intervals.py
 ```
 
-It writes the three images below and prints the ranking table. It needs
+It writes the three images below and prints the ranking table. The page,
+`index.html`, is written by hand and published by GitHub Pages. It needs
 Python 3 with numpy, matplotlib and Pillow. The images are saved with no
 metadata.
 
@@ -36,6 +40,20 @@ diagonal.
 
 Lines from (1, 1) instead of from (0, 0) come out white: (1 + 2k, 1 + k), for
 example, always has gcd 1.
+
+## Turk's head knots
+
+A Turk's head knot is described by its **leads**, the number of times the
+strand passes round, and its **bights**, the scallops at each edge. A Turk's
+head with L leads and B bights ties with a single strand exactly when
+gcd(L, B) = 1. Otherwise it falls apart into gcd(L, B) separate loops.
+
+So the white squares of the grid are the Turk's heads that work, read as x
+leads and y bights. The black rays are the ones that don't: the point
+k·(p, q) on a ray makes k separate strands, each tracing the (p, q) pattern
+turned a little. The [knotwork sound-hole
+generators](https://gernreich.github.io/knotwork-soundholes/) use exactly
+this rule: the single-strand generator refuses a pair that isn't coprime.
 
 ## The number line
 

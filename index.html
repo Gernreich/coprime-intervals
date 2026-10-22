@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coprime Pairs and Intervals</title>
+<meta name="description" content="Coprime pairs as a grid of rays, as Turk's head knots that tie with one strand, and as the musical intervals inside one octave.">
+<style>
+:root {
+  --bg: #fcfcfb;
+  --surface: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --rule: #dddcd6;
+  --accent: #2a78d6;
+  --cell-on: #ffffff;
+  --cell-off: #1d1d1c;
+  --ray: #e34948;
+  --pick: #eda100;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #6250d6;
+  --s5: #e87ba4; --s6: #008300; --s7: #eda100; --s8: #e34948;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1a19; --surface: #252523; --ink: #f0efec; --ink-2: #c3c2b7; --rule: #3a3a37;
+    --accent: #3987e5; --cell-on: #f0efec; --cell-off: #111110; --ray: #e66767; --pick: #c98500;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #9085e9;
+    --s5: #d55181; --s6: #008300; --s7: #c98500; --s8: #e66767;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1a1a19; --surface: #252523; --ink: #f0efec; --ink-2: #c3c2b7; --rule: #3a3a37;
+  --accent: #3987e5; --cell-on: #f0efec; --cell-off: #111110; --ray: #e66767; --pick: #c98500;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #9085e9;
+  --s5: #d55181; --s6: #008300; --s7: #c98500; --s8: #e66767;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 17px/1.6 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+main { max-width: 860px; overflow-wrap: break-word; margin: 0 auto; padding: 40px 16px 64px; }
+h1 { font-size: 2.1rem; line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.01em; }
+h2 { font-size: 1.35rem; margin: 48px 0 8px; padding-top: 16px; border-top: 1px solid var(--rule); }
+p, li { color: var(--ink); }
+.lede { font-size: 1.12rem; color: var(--ink-2); margin: 0 0 24px; }
+a { color: var(--accent); }
+code { font: 0.92em ui-monospace, SFMono-Regular, Menlo, monospace; }
+figure { margin: 20px 0; }
+figure img { width: 100%; height: auto; display: block; border: 1px solid var(--rule); border-radius: 6px; background: #fff; }
+figcaption { font-size: 0.9rem; color: var(--ink-2); margin-top: 6px; }
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; font-size: 0.92rem; min-width: 560px; width: 100%; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { color: var(--ink-2); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; }
+.credit { background: var(--surface); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
+
+/* explorer */
+.explore { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 20px; align-items: start; margin-top: 16px; }
+.explore > * { min-width: 0; }
+@media (max-width: 720px) { .explore { grid-template-columns: minmax(0, 1fr); } }
+#grid { width: 100%; aspect-ratio: 1; display: block; border-radius: 6px; cursor: crosshair; touch-action: none; }
+#grid:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.panel { background: var(--surface); border-radius: 6px; padding: 14px 16px; }
+.panel .pair { font-size: 1.5rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.panel dl { margin: 8px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 0.92rem; }
+.panel dt { color: var(--ink-2); }
+.panel dd { margin: 0; font-variant-numeric: tabular-nums; }
+.verdict { margin: 10px 0 4px; font-weight: 600; }
+#knot { width: 100%; aspect-ratio: 1; display: block; margin-top: 8px; }
+.hint { font-size: 0.85rem; color: var(--ink-2); margin-top: 8px; }
+footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-2); }
+</style>
+</head>
+<body>
+<main>
+<h1>Coprime pairs and musical intervals</h1>
+<p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave.</p>
+
+<h2>Explore the grid</h2>
+<p>x runs left to right, y top to bottom, starting at (1, 1). A square is light when x and y are coprime and dark when they share a factor. Pick a square to see its pair, the ray it lies on, and the Turk's head knot with x leads and y bights.</p>
+<div class="explore">
+  <canvas id="grid" tabindex="0" role="img" aria-label="40 by 40 grid of coprime pairs; use the arrow keys to move the selection"></canvas>
+  <div class="panel" aria-live="polite">
+    <div class="pair" id="pair">(5, 3)</div>
+    <dl>
+      <dt>gcd</dt><dd id="g">1</dd>
+      <dt>lowest terms</dt><dd id="frac">5/3</dd>
+      <dt>ray</dt><dd id="ray">step 5 across, 3 down</dd>
+    </dl>
+    <div class="verdict" id="verdict">Turk's head: one strand</div>
+    <svg id="knot" viewBox="-1.05 -1.05 2.1 2.1" aria-label="Turk's head knot diagram"></svg>
+    <div class="hint">Arrow keys move the selection; drag or tap to pick.</div>
+  </div>
+</div>
+
+<h2>The grid and its rays</h2>
+<figure>
+  <img src="images/grid-100.png" alt="100 by 100 coprime grid: white where coprime, black otherwise, with 29 coloured rays fanning out from the top-left corner" width="2000" height="2000" loading="lazy">
+  <figcaption>100 × 100 pairs. The 29 rays with both steps at most 7 and the smaller at most 4 are drawn solid, coloured by angle; the red one is the diagonal. <a href="images/grid-3840x2160.png">The same grid at one pixel per pair</a>, the size of a 4K screen.</figcaption>
+</figure>
+<p>Take any step p across and q down with gcd(p, q) = 1. The points (2p, 2q), (3p, 3q), (4p, 4q)… have gcd 2, 3, 4…, so every one of them is dark: each coprime step makes a dark ray out of the corner (0, 0). The first point, (p, q) itself, is light. The 1:1 ray is the diagonal. Lines drawn from (1, 1) instead of (0, 0) come out light: (1 + 2k, 1 + k), for example, always has gcd 1.</p>
+
+<h2>Turk's head knots</h2>
+<p>A Turk's head knot is described by its <strong>leads</strong>, the number of times the strand passes round, and its <strong>bights</strong>, the scallops at each edge. A Turk's head with L leads and B bights ties with a single strand exactly when gcd(L, B) = 1. Otherwise it falls apart into gcd(L, B) separate loops.</p>
+<p>So the light squares of the grid are the Turk's heads that work, read as x leads and y bights. The dark rays are the ones that don't: the point k·(p, q) on a ray makes k separate strands, each tracing the (p, q) pattern turned a little. The explorer above draws each strand in its own colour.</p>
+<p>The <a href="https://gernreich.github.io/knotwork-soundholes/">knotwork sound-hole generators</a> use exactly this rule: the single-strand generator takes any leads × bights and refuses a pair that isn't coprime.</p>
+
+<h2>6/π²</h2>
+<p>About 61% of the squares are light. As the grid grows, the share tends to 6/π² ≈ 60.79%: the probability that two random whole numbers are coprime. It is 1/ζ(2), where ζ(2) = 1 + 1/4 + 1/9 + 1/16 + … = π²/6. In the 3840 × 2160 grid the share is 60.80%.</p>
+<p>The same figure sets the number line's count. Of all the fractions p/q from 1 to 2 with q up to Q, the share in lowest terms tends to 6/π²: 1103 of 1890 (58%) at Q = 60, 304,193 of 501,500 (60.7%) at Q = 1000. So the number line has about 3Q²/π² lines.</p>
+<p class="credit">The author found this ratio, π² : 6, independently at the age of 14.</p>
+
+<h2>The number line</h2>
+<figure>
+  <img src="images/number-line.png" alt="Every coprime fraction between 1 and 2 as a vertical line of height 1 over p squared plus q squared, on a log scale, with the musical intervals named and coloured" width="2716" height="1406" loading="lazy">
+  <figcaption>Every coprime p/q from 1 to 2 with denominator up to 60, height 1/(p² + q²) on a log scale. The just-intonation intervals are named and coloured by class.</figcaption>
+</figure>
+<p>The pattern repeats at every scale: each tall line stands in a gap with smaller arches either side. The gaps are real, since no fraction with a small denominator lies close to a simple one like 3/2, but their width here comes from stopping at denominator 60.</p>
+
+<h2>Does the height order the intervals by consonance?</h2>
+<p>Very nearly. Sorted by p² + q², the intervals come out unison, octave, fifth, fourth, major sixth, major third, minor third, minor sixth: the order Helmholtz gave for the consonances in <em>On the Sensations of Tone</em> (1863). Dissonances follow, the minor second near the end and the tritone last. The two ratios with a 7 in them, 7:4 and 7:5, come in above the minor sixth; Western 12-tone music has no 7-based ratios, so the usual lists leave them out.</p>
+<p>Simple ratios sound smooth because two notes in the ratio p:q share overtones: their waveforms line up every p cycles of one and q cycles of the other. Smaller numbers mean more shared overtones and less beating.</p>
+<p>Four rules for how simple p:q is. Each cell is the score and, in brackets, the rank; equal scores share a rank.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Interval</th><th>Ratio</th><th>p²+q²</th><th>p+q (Pythagorean)</th><th>p·q (Tenney)</th><th>Euler gradus</th></tr></thead>
+<tbody>
+<tr><td>unison</td><td class="num">1:1</td><td class="num">2 (1)</td><td class="num">2 (1)</td><td class="num">1 (1)</td><td class="num">1 (1)</td></tr>
+<tr><td>octave</td><td class="num">2:1</td><td class="num">5 (2)</td><td class="num">3 (2)</td><td class="num">2 (2)</td><td class="num">2 (2)</td></tr>
+<tr><td>perfect 5th</td><td class="num">3:2</td><td class="num">13 (3)</td><td class="num">5 (3)</td><td class="num">6 (3)</td><td class="num">4 (3)</td></tr>
+<tr><td>perfect 4th</td><td class="num">4:3</td><td class="num">25 (4)</td><td class="num">7 (4)</td><td class="num">12 (4)</td><td class="num">5 (4)</td></tr>
+<tr><td>major 6th</td><td class="num">5:3</td><td class="num">34 (5)</td><td class="num">8 (5)</td><td class="num">15 (5)</td><td class="num">7 (5)</td></tr>
+<tr><td>major 3rd</td><td class="num">5:4</td><td class="num">41 (6)</td><td class="num">9 (6)</td><td class="num">20 (6)</td><td class="num">7 (5)</td></tr>
+<tr><td>minor 3rd</td><td class="num">6:5</td><td class="num">61 (7)</td><td class="num">11 (7)</td><td class="num">30 (8)</td><td class="num">8 (6)</td></tr>
+<tr><td>harmonic 7th</td><td class="num">7:4</td><td class="num">65 (8)</td><td class="num">11 (7)</td><td class="num">28 (7)</td><td class="num">9 (7)</td></tr>
+<tr><td>septimal tritone</td><td class="num">7:5</td><td class="num">74 (9)</td><td class="num">12 (8)</td><td class="num">35 (9)</td><td class="num">11 (9)</td></tr>
+<tr><td>minor 6th</td><td class="num">8:5</td><td class="num">89 (10)</td><td class="num">13 (9)</td><td class="num">40 (10)</td><td class="num">8 (6)</td></tr>
+<tr><td>minor 7th</td><td class="num">9:5</td><td class="num">106 (11)</td><td class="num">14 (10)</td><td class="num">45 (11)</td><td class="num">9 (7)</td></tr>
+<tr><td>major 2nd</td><td class="num">9:8</td><td class="num">145 (12)</td><td class="num">17 (11)</td><td class="num">72 (12)</td><td class="num">8 (6)</td></tr>
+<tr><td>major 7th</td><td class="num">15:8</td><td class="num">289 (13)</td><td class="num">23 (12)</td><td class="num">120 (13)</td><td class="num">10 (8)</td></tr>
+<tr><td>minor 7th</td><td class="num">16:9</td><td class="num">337 (14)</td><td class="num">25 (13)</td><td class="num">144 (14)</td><td class="num">9 (7)</td></tr>
+<tr><td>minor 2nd</td><td class="num">16:15</td><td class="num">481 (15)</td><td class="num">31 (14)</td><td class="num">240 (15)</td><td class="num">11 (9)</td></tr>
+<tr><td>tritone</td><td class="num">45:32</td><td class="num">3049 (16)</td><td class="num">77 (15)</td><td class="num">1440 (16)</td><td class="num">14 (10)</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>p + q.</strong> Ptolemy (<em>Harmonics</em> I.5–6) reports and criticises a Pythagorean measure: take the ratio in lowest terms, subtract one from each term and add what is left; the smaller the sum, the better the consonance. That is p + q − 2, so it orders exactly as p + q, giving octave 1, fifth 3, fourth 5. (Recalled from Barker's translation in <em>Greek Musical Writings</em> II; worth checking against the text.)</li>
+<li><strong>p · q.</strong> Tenney height, from the 20th century, usually quoted as log₂(p·q). It puts 7:4 ahead of 6:5.</li>
+<li><strong>Euler's gradus suavitatis</strong> (1739): 1 plus the sum of (prime − 1) over the prime factors of p·q, with repeats. Coarse, so many ties, and it rates 9:8 as smooth as the minor sixth.</li>
+<li><strong>p² + q²</strong> is the same as (p − q)² + 2pq: Tenney's measure plus a penalty for wide intervals. The four rules agree on the first six places.</li>
+</ul>
+<p>The Greeks didn't rank all these intervals. The Pythagoreans counted only the octave, fifth and fourth and their octave compounds as consonant: ratios that are <em>multiple</em> (n:1) or <em>superparticular</em> ((n+1):n) and built from 1, 2, 3 and 4. Ptolemy broke with them over the octave plus a fourth (8:3), which he heard as consonant though it is neither. Thirds and sixths were counted as consonances only from the Middle Ages on.</p>
+<p>Two limits. These are just-intonation ratios, and equal temperament only comes close: a piano's major third is 400 cents, 5:4 is 386. And how consonant an interval sounds also depends on register, timbre and context, which no formula sees.</p>
+
+<footer>
+Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Gernreich/coprime-intervals">coprime-intervals repository</a>. Public domain (CC0 1.0).
+</footer>
+</main>
+
+<script>
+(() => {
+  const N = 40;
+  const canvas = document.getElementById("grid");
+  const ctx = canvas.getContext("2d");
+  const knot = document.getElementById("knot");
+  const $ = id => document.getElementById(id);
+  const gcd = (a, b) => b ? gcd(b, a % b) : a;
+  let sel = { x: 5, y: 3 };
+  const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  function draw() {
+    const px = canvas.clientWidth * devicePixelRatio;
+    canvas.width = canvas.height = px;
+    const s = px / N;
+    const on = css("--cell-on"), off = css("--cell-off");
+    for (let y = 1; y <= N; y++) for (let x = 1; x <= N; x++) {
+      ctx.fillStyle = gcd(x, y) === 1 ? on : off;
+      ctx.fillRect((x - 1) * s, (y - 1) * s, Math.ceil(s), Math.ceil(s));
+    }
+    // the selected pair's ray: every multiple of its lowest-terms step
+    const g = gcd(sel.x, sel.y), p = sel.x / g, q = sel.y / g;
+    ctx.fillStyle = css("--ray");
+    for (let k = 2; k * p <= N && k * q <= N; k++)
+      ctx.fillRect((k * p - 1) * s + s * 0.25, (k * q - 1) * s + s * 0.25, s * 0.5, s * 0.5);
+    ctx.strokeStyle = css("--pick");
+    ctx.lineWidth = Math.max(2, s * 0.14);
+    ctx.strokeRect((sel.x - 1) * s + ctx.lineWidth / 2, (sel.y - 1) * s + ctx.lineWidth / 2,
+                   s - ctx.lineWidth, s - ctx.lineWidth);
+  }
+
+  // Turk's head, L leads and B bights: r = R + A cos(B t / L). Each of the gcd(L, B)
+  // strands runs t over [0, 2 pi L / d) and is the first turned by 2 pi j / B.
+  function drawKnot(L, B) {
+    const d = gcd(L, B), R = 0.62, A = 0.36, steps = 240 * (L / d);
+    const colours = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6", "--s7", "--s8"];
+    let svg = "";
+    for (let j = 0; j < d; j++) {
+      const rot = 2 * Math.PI * j / B;
+      let path = "";
+      for (let i = 0; i <= steps; i++) {
+        const t = 2 * Math.PI * (L / d) * i / steps;
+        const r = R + A * Math.cos(B * t / L);
+        path += (i ? "L" : "M") + (r * Math.cos(t + rot)).toFixed(4) + " " + (r * Math.sin(t + rot)).toFixed(4);
+      }
+      const colour = d === 1 ? css("--ink") : d <= 8 ? css(colours[j]) : css("--ink-2");
+      svg += `<path d="${path}Z" fill="none" stroke="${colour}" stroke-width="0.022" stroke-linejoin="round"/>`;
+    }
+    knot.innerHTML = svg;
+  }
+
+  function update() {
+    const { x, y } = sel, g = gcd(x, y);
+    $("pair").textContent = `(${x}, ${y})`;
+    $("g").textContent = g;
+    $("frac").textContent = `${x / g}/${y / g}`;
+    $("ray").textContent = `step ${x / g} across, ${y / g} down` + (g > 1 ? `, point ${g}` : ", first point");
+    $("verdict").textContent = g === 1
+      ? `Turk's head, ${x} leads × ${y} bights: one strand`
+      : `Turk's head, ${x} leads × ${y} bights: ${g} separate strands`;
+    draw();
+    drawKnot(x, y);
+  }
+
+  function pick(ev) {
+    const r = canvas.getBoundingClientRect();
+    const x = Math.floor((ev.clientX - r.left) / r.width * N) + 1;
+    const y = Math.floor((ev.clientY - r.top) / r.height * N) + 1;
+    if (x >= 1 && x <= N && y >= 1 && y <= N && (x !== sel.x || y !== sel.y)) { sel = { x, y }; update(); }
+  }
+  canvas.addEventListener("pointerdown", ev => { canvas.setPointerCapture(ev.pointerId); pick(ev); });
+  canvas.addEventListener("pointermove", ev => { if (ev.buttons || ev.pointerType === "mouse") pick(ev); });
+  canvas.addEventListener("keydown", ev => {
+    const move = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[ev.key];
+    if (!move) return;
+    ev.preventDefault();
+    sel = { x: Math.min(N, Math.max(1, sel.x + move[0])), y: Math.min(N, Math.max(1, sel.y + move[1])) };
+    update();
+  });
+  new ResizeObserver(draw).observe(canvas);
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", update);
+  update();
+})();
+</script>
+</body>
+</html>
