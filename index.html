@@ -58,21 +58,23 @@ table.wrap th, table.wrap td { white-space: normal; vertical-align: top; }
 .credit { background: var(--surface); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
 
 /* explorer */
-.explore { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 20px; align-items: start; margin-top: 16px; }
+.explore { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 20px; align-items: start; margin-top: 12px; }
 .explore > * { min-width: 0; }
 @media (max-width: 720px) { .explore { grid-template-columns: minmax(0, 1fr); } }
 #grid { width: 100%; aspect-ratio: 1; display: block; border-radius: 6px; cursor: crosshair; touch-action: none; }
 #grid:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.panel { background: var(--surface); border-radius: 6px; padding: 14px 16px; }
-.panel .pair { font-size: 1.5rem; font-weight: 650; font-variant-numeric: tabular-nums; }
-.panel dl { margin: 8px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 0.92rem; }
+.panel { background: var(--surface); border-radius: 6px; padding: 10px 16px; margin-top: 16px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 20px; }
+.panel .pair { font-size: 1.35rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.panel dl { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; font-size: 0.92rem; }
 .panel dt { color: var(--ink-2); }
-.panel dd { margin: 0; font-variant-numeric: tabular-nums; }
-.verdict { margin: 10px 0 4px; font-weight: 600; }
-.figs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+.panel dd { margin: 0 14px 0 0; font-variant-numeric: tabular-nums; }
+.verdict { flex-basis: 100%; font-weight: 600; }
+.panel .hint { flex-basis: 100%; margin-top: 0; }
+.figs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .figs > * { min-width: 0; }
-@media (max-width: 560px) { .figs { grid-template-columns: minmax(0, 1fr); } }
-.card { margin: 0; background: var(--surface); border-radius: 6px; padding: 14px; }
+@media (max-width: 720px) and (min-width: 561px) { .figs { grid-template-columns: 1fr 1fr; gap: 20px; } }
+.card { margin: 0; background: var(--surface); border-radius: 6px; padding: 12px; }
 #knot, #liss { width: 100%; aspect-ratio: 1; display: block; }
 #spin { margin-top: 8px; font: inherit; font-size: 0.85rem; color: var(--ink); background: transparent;
   border: 1px solid var(--rule); border-radius: 4px; padding: 3px 12px; cursor: pointer; }
@@ -95,29 +97,29 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 
 <h2>Explore the grid</h2>
 <p>x runs left to right, y top to bottom, starting at (1, 1). A square is light when x and y are coprime and dark when they share a factor. Pick a square to see its pair, the ray it lies on, the Turk's head knot with x leads and y bights, and the Lissajous figure x : y.</p>
-<div class="explore">
-  <canvas id="grid" tabindex="0" role="img" aria-label="40 by 40 grid of coprime pairs; use the arrow keys to move the selection"></canvas>
-  <div class="panel" aria-live="polite">
-    <div class="pair" id="pair">(5, 3)</div>
-    <dl>
-      <dt>gcd</dt><dd id="g">1</dd>
-      <dt>lowest terms</dt><dd id="frac">5/3</dd>
-      <dt>ray</dt><dd id="ray">step 5 across, 3 down</dd>
-    </dl>
-    <div class="verdict" id="verdict">Turk's head: one strand</div>
-    <div class="hint">Arrow keys move the selection; drag or tap to pick.</div>
-  </div>
+<div class="panel" aria-live="polite">
+  <div class="pair" id="pair">(5, 3)</div>
+  <dl>
+    <dt>gcd</dt><dd id="g">1</dd>
+    <dt>lowest terms</dt><dd id="frac">5/3</dd>
+    <dt>ray</dt><dd id="ray">step 5 across, 3 down</dd>
+  </dl>
+  <div class="verdict" id="verdict">Turk's head: one strand</div>
+  <div class="hint">Arrow keys move the selection; click, drag or tap to pick.</div>
 </div>
-<div class="figs">
-  <figure class="card">
-    <svg id="knot" viewBox="-1.05 -1.05 2.1 2.1" role="img" aria-label="Turk's head knot diagram"></svg>
-    <figcaption id="knot-cap">Turk's head, 5 leads × 3 bights, seen from the end of the drum</figcaption>
-  </figure>
-  <figure class="card">
-    <canvas id="liss" role="img" aria-label="Rotating Lissajous figure"></canvas>
-    <figcaption id="liss-cap">Lissajous 5:3, seen from the side of the drum</figcaption>
-    <button type="button" id="spin" aria-pressed="true">Pause</button>
-  </figure>
+<div class="explore">
+  <canvas id="grid" tabindex="0" role="img" aria-label="11 by 11 grid of coprime pairs; use the arrow keys to move the selection"></canvas>
+  <div class="figs">
+    <figure class="card">
+      <svg id="knot" viewBox="-1.05 -1.05 2.1 2.1" role="img" aria-label="Turk's head knot diagram"></svg>
+      <figcaption id="knot-cap">Turk's head, 5 leads × 3 bights, seen from the end of the drum</figcaption>
+    </figure>
+    <figure class="card">
+      <canvas id="liss" role="img" aria-label="Rotating Lissajous figure"></canvas>
+      <figcaption id="liss-cap">Lissajous 5:3, seen from the side of the drum</figcaption>
+      <button type="button" id="spin" aria-pressed="true">Pause</button>
+    </figure>
+  </div>
 </div>
 <p>The Lissajous figure is x = sin(a·t + δ), y = sin(b·t) with a and b the pair. It is drawn as a wire on a turning drum: the part of the wire on the far side is faint. Turning the drum is the same as letting δ drift, which is what an oscilloscope shows when two tones are a little out of tune.</p>
 
@@ -155,7 +157,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <p>The <a href="https://gernreich.github.io/knotwork-soundholes/">knotwork sound-hole generators</a> use exactly this rule: the single-strand generator takes any leads × bights and refuses a pair that isn't coprime.</p>
 
 <h2>6/π²</h2>
-<p>About 61% of the squares are light. As the grid grows, the share tends to 6/π² ≈ 60.79%: the probability that two random whole numbers are coprime. It is 1/ζ(2), where ζ(2) = 1 + 1/4 + 1/9 + 1/16 + … = π²/6. In the 3840 × 2160 grid the share is 60.80%.</p>
+<p>In the 11 × 11 grid above, 83 of the 121 squares are light, about 69%. As the grid grows, the share tends to 6/π² ≈ 60.79%: the probability that two random whole numbers are coprime. It is 1/ζ(2), where ζ(2) = 1 + 1/4 + 1/9 + 1/16 + … = π²/6. In the 3840 × 2160 grid the share is 60.80%.</p>
 <p>The same figure sets the number line's count. Of all the fractions p/q from 1 to 2 with q up to Q, the share in lowest terms tends to 6/π²: 1103 of 1890 (58%) at Q = 60, 304,193 of 501,500 (60.7%) at Q = 1000. So the number line has about 3Q²/π² lines.</p>
 <p class="credit">The author found this ratio, π² : 6, independently at the age of 14.</p>
 
@@ -278,7 +280,7 @@ Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Ger
 
 <script>
 (() => {
-  const N = 40;
+  const N = 11;
   const canvas = document.getElementById("grid");
   const ctx = canvas.getContext("2d");
   const knot = document.getElementById("knot");
@@ -394,7 +396,7 @@ Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Ger
     if (x >= 1 && x <= N && y >= 1 && y <= N && (x !== sel.x || y !== sel.y)) { sel = { x, y }; update(); }
   }
   canvas.addEventListener("pointerdown", ev => { canvas.setPointerCapture(ev.pointerId); pick(ev); });
-  canvas.addEventListener("pointermove", ev => { if (ev.buttons || ev.pointerType === "mouse") pick(ev); });
+  canvas.addEventListener("pointermove", ev => { if (ev.buttons) pick(ev); });
   canvas.addEventListener("keydown", ev => {
     const move = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[ev.key];
     if (!move) return;
