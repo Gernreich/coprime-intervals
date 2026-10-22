@@ -1,5 +1,7 @@
 # Coprime pairs and musical intervals
 
+**[← All projects](https://gernreich.github.io/)**
+
 **[Read the writeup](https://gernreich.github.io/coprime-intervals/)**: pick
 any square of the grid to see its ray, the Turk's head knot it makes and its
 Lissajous figure turning, with the orchard, the number line and the history
