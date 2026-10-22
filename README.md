@@ -58,6 +58,8 @@ grid's white blocks: 1103 of 1890 (58%) at Q = 60, 304,193 of 501,500
 Q = 60). The figure also goes the other way round: 6/π² = 1/ζ(2), where
 ζ(2) = 1 + 1/4 + 1/9 + … = π²/6.
 
+The author found this ratio, π² : 6, independently at the age of 14.
+
 ## Does the height order the intervals by consonance?
 
 Very nearly. Sorted by p² + q², the intervals come out unison, octave, fifth,
