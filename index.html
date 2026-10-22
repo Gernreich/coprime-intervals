@@ -54,6 +54,7 @@ table { border-collapse: collapse; font-size: 0.92rem; min-width: 560px; width: 
 th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
 th { color: var(--ink-2); font-weight: 600; }
 td.num { font-variant-numeric: tabular-nums; }
+table.wrap th, table.wrap td { white-space: normal; vertical-align: top; }
 .credit { background: var(--surface); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
 
 /* explorer */
@@ -68,7 +69,14 @@ td.num { font-variant-numeric: tabular-nums; }
 .panel dt { color: var(--ink-2); }
 .panel dd { margin: 0; font-variant-numeric: tabular-nums; }
 .verdict { margin: 10px 0 4px; font-weight: 600; }
-#knot { width: 100%; aspect-ratio: 1; display: block; margin-top: 8px; }
+.figs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+.figs > * { min-width: 0; }
+@media (max-width: 560px) { .figs { grid-template-columns: minmax(0, 1fr); } }
+.card { margin: 0; background: var(--surface); border-radius: 6px; padding: 14px; }
+#knot, #liss { width: 100%; aspect-ratio: 1; display: block; }
+#spin { margin-top: 8px; font: inherit; font-size: 0.85rem; color: var(--ink); background: transparent;
+  border: 1px solid var(--rule); border-radius: 4px; padding: 3px 12px; cursor: pointer; }
+#spin:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .hint { font-size: 0.85rem; color: var(--ink-2); margin-top: 8px; }
 footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-2); }
 </style>
@@ -76,10 +84,10 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <body>
 <main>
 <h1>Coprime pairs and musical intervals</h1>
-<p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave.</p>
+<p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave. On an oscilloscope, they are the Lissajous figures.</p>
 
 <h2>Explore the grid</h2>
-<p>x runs left to right, y top to bottom, starting at (1, 1). A square is light when x and y are coprime and dark when they share a factor. Pick a square to see its pair, the ray it lies on, and the Turk's head knot with x leads and y bights.</p>
+<p>x runs left to right, y top to bottom, starting at (1, 1). A square is light when x and y are coprime and dark when they share a factor. Pick a square to see its pair, the ray it lies on, the Turk's head knot with x leads and y bights, and the Lissajous figure x : y.</p>
 <div class="explore">
   <canvas id="grid" tabindex="0" role="img" aria-label="40 by 40 grid of coprime pairs; use the arrow keys to move the selection"></canvas>
   <div class="panel" aria-live="polite">
@@ -90,10 +98,41 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       <dt>ray</dt><dd id="ray">step 5 across, 3 down</dd>
     </dl>
     <div class="verdict" id="verdict">Turk's head: one strand</div>
-    <svg id="knot" viewBox="-1.05 -1.05 2.1 2.1" aria-label="Turk's head knot diagram"></svg>
     <div class="hint">Arrow keys move the selection; drag or tap to pick.</div>
   </div>
 </div>
+<div class="figs">
+  <figure class="card">
+    <svg id="knot" viewBox="-1.05 -1.05 2.1 2.1" role="img" aria-label="Turk's head knot diagram"></svg>
+    <figcaption id="knot-cap">Turk's head, 5 leads × 3 bights, seen from the end of the drum</figcaption>
+  </figure>
+  <figure class="card">
+    <canvas id="liss" role="img" aria-label="Rotating Lissajous figure"></canvas>
+    <figcaption id="liss-cap">Lissajous 5:3, seen from the side of the drum</figcaption>
+    <button type="button" id="spin" aria-pressed="true">Pause</button>
+  </figure>
+</div>
+<p>The Lissajous figure is x = sin(a·t + δ), y = sin(b·t) with a and b the pair. It is drawn as a wire on a turning drum: the part of the wire on the far side is faint. Turning the drum is the same as letting δ drift, which is what an oscilloscope shows when two tones are a little out of tune.</p>
+
+<h2>One idea, four views</h2>
+<p>Everything on this page is one question asked four ways: <strong>is the ratio a : b in lowest terms?</strong></p>
+<div class="table-wrap">
+<table class="wrap">
+<thead><tr><th></th><th>Coprime a : b</th><th>a : b with a common factor d</th><th>What makes it simple</th></tr></thead>
+<tbody>
+<tr><td>Grid</td><td>a light square, the first point of its ray</td><td>a dark square, point d of the ray a/d : b/d</td><td>near the corner</td></tr>
+<tr><td>Music</td><td>an interval, frequencies in the ratio a : b</td><td>the same interval as a/d : b/d</td><td>small a and b: more shared overtones, more consonant</td></tr>
+<tr><td>Turk's head</td><td>a leads, b bights, one strand</td><td>d separate strands, each an a/d × b/d pattern</td><td>few leads and bights</td></tr>
+<tr><td>Lissajous</td><td>one closed curve, touching each side a times and the top b times</td><td>the a/d : b/d curve traced d times</td><td>few lobes, a steady figure</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>Coprime pairs</strong> are fractions already in lowest terms. Every other pair is a multiple of one, which is why the dark squares line up in rays from the corner: a whole ray is one ratio.</li>
+<li><strong>Musical intervals</strong> are those ratios heard as pitch. Two notes a : b apart line up every a cycles of one and b of the other, so small coprime numbers sound smooth: 1:1, 2:1, 3:2, 4:3, 5:3, 5:4… in the order of the number line's heights.</li>
+<li><strong>Turk's heads</strong> are the same ratio wound on a drum: a passes round, b scallops at each edge. One strand closes up exactly when a and b are coprime; a common factor d leaves d loops.</li>
+<li><strong>Lissajous figures</strong> are the same drum seen from the side. Two tones a : b on an oscilloscope draw the wire, the closed figure is the one-strand Turk's head without the over and under, and a slight mistuning turns the drum. Tune exactly and it stands still; the simpler the interval, the simpler the figure.</li>
+</ul>
 
 <h2>The grid and its rays</h2>
 <figure>
@@ -220,9 +259,56 @@ Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Ger
     $("verdict").textContent = g === 1
       ? `Turk's head, ${x} leads × ${y} bights: one strand`
       : `Turk's head, ${x} leads × ${y} bights: ${g} separate strands`;
+    $("knot-cap").textContent = `Turk's head, ${x} leads × ${y} bights, seen from the end of the drum`;
+    $("liss-cap").textContent = `Lissajous ${x}:${y}` + (g > 1 ? ` (the same curve as ${x / g}:${y / g}, traced ${g} times)` : "") + ", seen from the side of the drum";
     draw();
     drawKnot(x, y);
+    drawLiss();
   }
+
+  // Lissajous x = sin(a t + delta), y = sin(b t): a wire wound a times round a drum while it rises
+  // and falls b times. delta is the drum's turn; z = cos(a t + delta) says which side faces us.
+  const liss = $("liss"), lctx = liss.getContext("2d");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let delta = 0.6, spinning = !still, last = null;
+  function drawLiss() {
+    const px = liss.clientWidth * devicePixelRatio;
+    if (liss.width !== px) liss.width = liss.height = px;
+    const g = gcd(sel.x, sel.y), a = sel.x / g, b = sel.y / g;
+    const half = px / 2, amp = px * 0.44, n = 900 * Math.max(a, b);
+    lctx.clearRect(0, 0, px, px);
+    lctx.lineWidth = Math.max(1.5, px * 0.008);
+    lctx.lineCap = "round";
+    const ink = css("--ink");
+    for (const front of [false, true]) {
+      lctx.strokeStyle = ink;
+      lctx.globalAlpha = front ? 1 : 0.22;
+      lctx.beginPath();
+      for (let i = 0; i < n; i++) {
+        const t0 = 2 * Math.PI * i / n, t1 = 2 * Math.PI * (i + 1) / n;
+        if ((Math.cos(a * (t0 + t1) / 2 + delta) >= 0) !== front) continue;
+        lctx.moveTo(half + amp * Math.sin(a * t0 + delta), half - amp * Math.sin(b * t0));
+        lctx.lineTo(half + amp * Math.sin(a * t1 + delta), half - amp * Math.sin(b * t1));
+      }
+      lctx.stroke();
+    }
+    lctx.globalAlpha = 1;
+  }
+  function tick(now) {
+    if (last !== null) delta += (now - last) / 1000 * 0.35;   // radians per second
+    last = now;
+    drawLiss();
+    if (spinning) requestAnimationFrame(tick); else last = null;
+  }
+  const spin = $("spin");
+  function setSpin(on) {
+    spinning = on;
+    spin.textContent = on ? "Pause" : "Turn";
+    spin.setAttribute("aria-pressed", String(on));
+    if (on) requestAnimationFrame(tick);
+  }
+  spin.addEventListener("click", () => setSpin(!spinning));
+  new ResizeObserver(drawLiss).observe(liss);
 
   function pick(ev) {
     const r = canvas.getBoundingClientRect();
@@ -242,6 +328,7 @@ Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Ger
   new ResizeObserver(draw).observe(canvas);
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", update);
   update();
+  setSpin(spinning);
 })();
 </script>
 </body>

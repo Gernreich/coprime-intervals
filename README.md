@@ -1,7 +1,37 @@
 # Coprime pairs and musical intervals
 
 **[Open the page](https://gernreich.github.io/coprime-intervals/)**: pick any
-square of the grid to see its ray and the Turk's head knot it makes.
+square of the grid to see its ray, the Turk's head knot it makes and its
+Lissajous figure turning.
+
+## One idea, four views
+
+Everything here is one question asked four ways: **is the ratio a : b in
+lowest terms?**
+
+| | Coprime a : b | a : b with a common factor d | What makes it simple |
+|---|---|---|---|
+| Grid | a white square, the first point of its ray | a black square, point d of the ray a/d : b/d | near the corner |
+| Music | an interval, frequencies in the ratio a : b | the same interval as a/d : b/d | small a and b: more shared overtones, more consonant |
+| Turk's head | a leads, b bights, one strand | d separate strands, each an a/d × b/d pattern | few leads and bights |
+| Lissajous | one closed curve, touching each side a times and the top b times | the a/d : b/d curve traced d times | few lobes, a steady figure |
+
+- **Coprime pairs** are fractions already in lowest terms. Every other pair
+  is a multiple of one, which is why the black squares line up in rays from
+  the corner: a whole ray is one ratio.
+- **Musical intervals** are those ratios heard as pitch. Two notes a : b
+  apart line up every a cycles of one and b of the other, so small coprime
+  numbers sound smooth: 1:1, 2:1, 3:2, 4:3, 5:3, 5:4… in the order of the
+  number line's heights.
+- **Turk's heads** are the same ratio wound on a drum: a passes round, b
+  scallops at each edge. One strand closes up exactly when a and b are
+  coprime; a common factor d leaves d loops.
+- **Lissajous figures** are the same drum seen from the side. x = sin(a·t + δ),
+  y = sin(b·t): the point goes round the drum a times while it rises and
+  falls b times. Two tones a : b on an oscilloscope draw that wire; the
+  closed figure is the one-strand Turk's head without the over and under,
+  and a slight mistuning makes δ drift, which turns the drum. Tune exactly
+  and it stands still; the simpler the interval, the simpler the figure.
 
 Two pictures of one fact. A pair of whole numbers (x, y) is **coprime** when
 gcd(x, y) = 1, that is, when x/y is already in lowest terms. Put the coprime
@@ -15,7 +45,8 @@ python3 coprime_intervals.py
 ```
 
 It writes the three images below and prints the ranking table. The page,
-`index.html`, is written by hand and published by GitHub Pages. It needs
+`index.html`, is written by hand and published by GitHub Pages; its
+explorer draws the Turk's head and the turning Lissajous figure live. It needs
 Python 3 with numpy, matplotlib and Pillow. The images are saved with no
 metadata.
 
