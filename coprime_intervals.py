@@ -11,6 +11,8 @@ ratios are the intervals inside one octave.
   images/grid-100.png         100 x 100 pairs in 20px blocks, rays drawn solid
   images/number-line.png      every coprime p/q in [1, 2], height 1/(p^2 + q^2),
                               the musical intervals named
+  images/orchard.png          the view from (0, 0) with a thin tree on every coprime
+                              pair, and the octave stretch of it with the intervals named
 
 Images are saved through Pillow with no metadata at all (no pHYs, no text).
 """
@@ -139,6 +141,62 @@ def number_line(qmax=60):
     save_fig(fig, "number-line.png")
 
 
+def orchard(radius=300, tree_h=1.0, tree_w=0.03):
+    """Standing at (0, 0), eye on the ground, a thin tree on every coprime pair out to radius.
+
+    A tree at (x, y) stands at bearing atan(y/x) and fills atan(tree_h/d) of the view
+    upward, d = sqrt(x^2 + y^2). The bottom panel is the stretch between (1,1) and (2,1),
+    turned so the ratio x/y runs 1 to 2 left to right like the number line.
+    """
+    ang, top, wid = [], [], []
+    for x in range(1, radius + 1):
+        for y in range(1, radius + 1):
+            d = math.hypot(x, y)
+            if d <= radius and gcd(x, y) == 1:
+                ang.append(math.degrees(math.atan2(y, x)))
+                top.append(math.degrees(math.atan(tree_h / d)))
+                wid.append(2 * math.degrees(math.atan(tree_w / 2 / d)))
+    view = lambda x, y: (math.degrees(math.atan2(y, x)), math.degrees(math.atan(tree_h / math.hypot(x, y))))
+    fig, (full, octave) = plt.subplots(2, 1, figsize=(20, 14), dpi=150, gridspec_kw={"hspace": 0.42})
+    for ax in (full, octave):
+        ax.set_facecolor("#dfeaf5")
+        ax.bar(ang, top, width=wid, color="#24402a", linewidth=0)
+        ax.set_ylim(0, 38)
+        ax.set_ylabel("height in view (degrees)")
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+    full.set_xlim(0, 90)
+    full.set_xlabel("bearing from the x axis (degrees)")
+    full.set_title(f"Standing at (0, 0) with a thin tree on every coprime pair out to distance {radius} "
+                   f"({len(ang):,} trees), eye on the ground")
+    for x, y in [(x, y) for x in range(1, 6) for y in range(1, 6) if gcd(x, y) == 1 and x + y <= 6]:
+        a, h = view(x, y)
+        full.annotate(f"({x},{y})", (a, h), xytext=(0, 3), textcoords="offset points", ha="center", fontsize=9)
+    full.axvspan(math.degrees(math.atan(0.5)), 45, color="#2a78d6", alpha=0.08, linewidth=0)
+    full.annotate("the octave: bottom panel", (35.8, 30), ha="center", fontsize=10, color="#1c5cab")
+
+    lo, hi = math.degrees(math.atan(0.5)), 45                  # (2,1) and (1,1)
+    octave.set_xlim(hi + 0.4, lo - 0.4)                          # reversed: ratio 1 on the left
+    octave.set_xlabel("bearing from the x axis (degrees)")
+    to_ratio = lambda a: 1 / np.tan(np.radians(np.clip(a, 1, 89)))
+    to_bearing = lambda r: np.degrees(np.arctan(1 / np.clip(r, 0.02, 50)))
+    top_axis = octave.secondary_xaxis("top", functions=(to_ratio, to_bearing))
+    top_axis.set_xticks([1, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 7 / 4, 2], ["1", "5/4", "4/3", "3/2", "5/3", "7/4", "2"])
+    top_axis.set_xlabel("the ratio x / y of the trees in that direction: the number line's 1 to 2")
+    # labels lifted clear of their neighbours (offset in points), joined to their tree by a line
+    lift = {(16, 9): (0, 72), (9, 5): (40, 85), (45, 32): (55, 40)}
+    for p, q, name, cls in INTERVALS:
+        a, h = view(p, q)
+        octave.bar(a, h, width=2 * math.degrees(math.atan(tree_w / 2 / math.hypot(p, q))),
+                   color=CLASS_COLOUR[cls], linewidth=0)
+        octave.annotate(f"{name}\n{p}:{q}", (a, h), xytext=lift.get((p, q), (0, 3)), textcoords="offset points",
+                        ha="center", va="bottom", fontsize=9.5, color="#0b0b0b",
+                        arrowprops=dict(arrowstyle="-", color="#52514e", lw=0.8) if (p, q) in lift else None)
+    octave.set_title("The same view between (1,1) and (2,1), turned to run 1 to 2 like the number line, "
+                     "intervals coloured as there", pad=42)
+    save_fig(fig, "orchard.png")
+
+
 def euler_gradus(n):
     """Euler's gradus suavitatis: 1 + sum of (prime - 1) over the prime factors of n."""
     g, d = 1, 2
@@ -179,4 +237,5 @@ if __name__ == "__main__":
     grid_screen()
     grid_blocks()
     number_line()
+    orchard()
     ranking_table()

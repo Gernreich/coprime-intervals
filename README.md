@@ -4,9 +4,9 @@
 square of the grid to see its ray, the Turk's head knot it makes and its
 Lissajous figure turning.
 
-## One idea, four views
+## One idea, five views
 
-Everything here is one question asked four ways: **is the ratio a : b in
+Everything here is one question asked several ways: **is the ratio a : b in
 lowest terms?**
 
 | | Coprime a : b | a : b with a common factor d | What makes it simple |
@@ -15,6 +15,7 @@ lowest terms?**
 | Music | an interval, frequencies in the ratio a : b | the same interval as a/d : b/d | small a and b: more shared overtones, more consonant |
 | Turk's head | a leads, b bights, one strand | d separate strands, each an a/d × b/d pattern | few leads and bights |
 | Lissajous | one closed curve, touching each side a times and the top b times | the a/d : b/d curve traced d times | few lobes, a steady figure |
+| Orchard | a tree you can see from (0, 0) | hidden behind the tree at (a/d, b/d) | near you, so tall in view |
 
 - **Coprime pairs** are fractions already in lowest terms. Every other pair
   is a multiple of one, which is why the black squares line up in rays from
@@ -44,7 +45,7 @@ Everything here is made by one script:
 python3 coprime_intervals.py
 ```
 
-It writes the three images below and prints the ranking table. The page,
+It writes the four images below and prints the ranking table. The page,
 `index.html`, is written by hand and published by GitHub Pages; its
 explorer draws the Turk's head and the turning Lissajous figure live. It needs
 Python 3 with numpy, matplotlib and Pillow. The images are saved with no
@@ -108,6 +109,37 @@ Q = 60). The figure also goes the other way round: 6/π² = 1/ζ(2), where
 ζ(2) = 1 + 1/4 + 1/9 + … = π²/6.
 
 The author found this ratio, π² : 6, independently at the age of 14.
+
+## Standing in the orchard
+
+![the view from (0,0) with a tree on every coprime pair](images/orchard.png)
+
+`images/orchard.png`: stand at (0, 0) and put a thin tree, one unit tall, on
+every coprime pair out to distance 300, eye on the ground. This is
+**Euclid's orchard**. No tree hides another, since each coprime point is the
+first on its ray, and the trees left out are exactly the ones that would
+have been hidden: a full orchard looks just the same from here. The bottom
+panel is the stretch between the trees at (1, 1) and (2, 1), turned to run 1
+to 2 like the number line.
+
+The orchard is the number line seen in perspective:
+
+- **Direction is the ratio.** The tree at (x, y) stands at bearing
+  atan(y/x). Between (1, 1) and (2, 1), 45° to 26.6°, you see every ratio
+  x/y from 1 to 2: the octave. The fifth stands at 33.7°, the fourth at 36.9°.
+- **Size is the height.** A tree at distance d = √(p² + q²) is about 1/d tall
+  in view and 1/d wide, so the share of the view it fills is 1/(p² + q²):
+  the height of its line on the number line. On a log scale the two have the
+  same shape, since log(1/d²) is twice log(1/d).
+- **The avenues are the gaps.** Beside each near tree a clear avenue runs
+  almost to the horizon: the gaps either side of each tall line.
+- **A flat window gives the Greek measure.** Trace the trees onto a window
+  along the line x + y = 1: the tree at (p, q) lands at p/(p + q) with
+  height 1/(p + q). That is Thomae's function, and p + q is the Pythagorean
+  measure.
+- **The far trees make a wall.** However thin the trees, enough of them far
+  enough out cover the horizon: the dark band at the bottom, and the dense
+  floor of the number line (Pólya's orchard problem).
 
 ## Does the height order the intervals by consonance?
 

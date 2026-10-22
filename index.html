@@ -84,7 +84,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <body>
 <main>
 <h1>Coprime pairs and musical intervals</h1>
-<p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave. On an oscilloscope, they are the Lissajous figures.</p>
+<p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave. On an oscilloscope, they are the Lissajous figures. Standing at the corner, they are the trees you can see.</p>
 
 <h2>Explore the grid</h2>
 <p>x runs left to right, y top to bottom, starting at (1, 1). A square is light when x and y are coprime and dark when they share a factor. Pick a square to see its pair, the ray it lies on, the Turk's head knot with x leads and y bights, and the Lissajous figure x : y.</p>
@@ -114,8 +114,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 </div>
 <p>The Lissajous figure is x = sin(a·t + δ), y = sin(b·t) with a and b the pair. It is drawn as a wire on a turning drum: the part of the wire on the far side is faint. Turning the drum is the same as letting δ drift, which is what an oscilloscope shows when two tones are a little out of tune.</p>
 
-<h2>One idea, four views</h2>
-<p>Everything on this page is one question asked four ways: <strong>is the ratio a : b in lowest terms?</strong></p>
+<h2>One idea, five views</h2>
+<p>Everything on this page is one question asked several ways: <strong>is the ratio a : b in lowest terms?</strong></p>
 <div class="table-wrap">
 <table class="wrap">
 <thead><tr><th></th><th>Coprime a : b</th><th>a : b with a common factor d</th><th>What makes it simple</th></tr></thead>
@@ -124,6 +124,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <tr><td>Music</td><td>an interval, frequencies in the ratio a : b</td><td>the same interval as a/d : b/d</td><td>small a and b: more shared overtones, more consonant</td></tr>
 <tr><td>Turk's head</td><td>a leads, b bights, one strand</td><td>d separate strands, each an a/d × b/d pattern</td><td>few leads and bights</td></tr>
 <tr><td>Lissajous</td><td>one closed curve, touching each side a times and the top b times</td><td>the a/d : b/d curve traced d times</td><td>few lobes, a steady figure</td></tr>
+<tr><td>Orchard</td><td>a tree you can see from (0, 0)</td><td>hidden behind the tree at (a/d, b/d)</td><td>near you, so tall in view</td></tr>
 </tbody>
 </table>
 </div>
@@ -157,6 +158,21 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   <figcaption>Every coprime p/q from 1 to 2 with denominator up to 60, height 1/(p² + q²) on a log scale. The just-intonation intervals are named and coloured by class.</figcaption>
 </figure>
 <p>The pattern repeats at every scale: each tall line stands in a gap with smaller arches either side. The gaps are real, since no fraction with a small denominator lies close to a simple one like 3/2, but their width here comes from stopping at denominator 60.</p>
+
+<h2>Standing in the orchard</h2>
+<figure>
+  <img src="images/orchard.png" alt="Panorama from the origin of thin trees on every coprime pair, tallest at 45 degrees, and below it the stretch between the trees at (1,1) and (2,1) with the musical intervals coloured" width="2437" height="1741" loading="lazy">
+  <figcaption>Top: the view from (0, 0) with a thin tree, one unit tall, on every coprime pair out to distance 300, eye on the ground. Bottom: the stretch between the trees at (1, 1) and (2, 1), turned so it runs 1 to 2 like the number line.</figcaption>
+</figure>
+<p>Stand at (0, 0) and put a thin tree on every coprime pair. This is <strong>Euclid's orchard</strong>. No tree hides another, since each coprime point is the first on its ray, and the trees left out are exactly the ones that would have been hidden. A full orchard, with a tree on every point, looks just the same from here.</p>
+<p>The orchard is the number line seen in perspective:</p>
+<ul>
+<li><strong>Direction is the ratio.</strong> The tree at (x, y) stands at bearing atan(y/x). Looking between the trees at (1, 1) and (2, 1), from 45° to 26.6°, you see every ratio x/y from 1 to 2: the octave. The fifth, 3:2, stands at 33.7°; the fourth, 4:3, at 36.9°.</li>
+<li><strong>Size is the height.</strong> A tree at distance d = √(p² + q²) stands about 1/d tall in view and 1/d wide, so the share of the view it fills is 1/(p² + q²): exactly the height of its line on the number line. On a log scale the two pictures have the same shape, since log(1/d²) is twice log(1/d).</li>
+<li><strong>The avenues are the gaps.</strong> Beside each near tree a clear avenue runs almost to the horizon, because no tree with small numbers stands close to a simple direction. These are the gaps either side of each tall line on the number line.</li>
+<li><strong>A flat window gives the Greek measure.</strong> Trace the trees onto a window standing along the line x + y = 1: the tree at (p, q) lands at p/(p + q) with height 1/(p + q). That is Thomae's function, and p + q is the Pythagorean measure of consonance.</li>
+<li><strong>The far trees make a wall.</strong> However thin the trees, enough of them far enough out cover the whole horizon: the dark band along the bottom, and the dense floor of the number line. This is Pólya's orchard problem. Trees with no thickness at all would leave a line of sight to infinity in every direction that is not a ratio of whole numbers.</li>
+</ul>
 
 <h2>Does the height order the intervals by consonance?</h2>
 <p>Very nearly. Sorted by p² + q², the intervals come out unison, octave, fifth, fourth, major sixth, major third, minor third, minor sixth: the order Helmholtz gave for the consonances in <em>On the Sensations of Tone</em> (1863). Dissonances follow, the minor second near the end and the tritone last. The two ratios with a 7 in them, 7:4 and 7:5, come in above the minor sixth; Western 12-tone music has no 7-based ratios, so the usual lists leave them out.</p>
