@@ -5,6 +5,15 @@ any square of the grid to see its ray, the Turk's head knot it makes and its
 Lissajous figure turning, with the orchard, the number line and the history
 on the same page.
 
+**Whose ideas these are.** The author came up with the connections here
+independently: the coprime grid and its rays, the number line with heights
+1/(p² + q²) and its match to the musical intervals, Turk's head knots,
+turning Lissajous figures, the view from the orchard, and the ratio π² : 6
+(at the age of 14). Some had been found before by others, and they are named
+where known (Euclid's orchard, Thomae's function, Pólya, Tenney, Euler,
+Ptolemy, Helmholtz) for history and comparison. The last section, *Further
+connections*, is different: none of it is the author's.
+
 ## One idea, five views
 
 Everything here is one question asked several ways: **is the ratio a : b in
@@ -204,6 +213,43 @@ Two limits. These are just-intonation ratios: equal temperament only comes
 close (a piano's major third is 400 cents, 5:4 is 386). And how consonant
 an interval sounds also depends on register, timbre and context, which no
 formula sees.
+
+## Further connections (not the author's)
+
+**The author did not come up with anything in this section.** These six
+connections were suggested by Claude, the AI assistant that helped build
+this page, and are standard results found by others. The writeup draws the
+Ford circles and the star polygons.
+
+- **Farey sequences and Ford circles.** The fractions in lowest terms with
+  denominator up to n, in order, form the Farey sequence; neighbours a/b and
+  c/d always satisfy bc − ad = 1. A circle on each p/q with diameter 1/q²
+  never overlaps another, and two touch exactly when their fractions are
+  neighbours (Lester Ford, 1938): the number line's heights and gaps as
+  circles.
+- **The Stern–Brocot tree.** From 1/1 and 2/1, keep inserting the mediant
+  (a + c)/(b + d). Round 1 gives 3/2; round 2, 4/3 and 5/3; round 3, 5/4,
+  7/5, 8/5 and 7/4; the minor third 6/5 waits for round 4. Close to the
+  consonance order. The full tree makes every coprime pair exactly once
+  (Stern 1858; Brocot 1861, a clockmaker choosing gear ratios).
+- **Star polygons.** n points on a circle, joining every k-th: one stroke
+  when gcd(n, k) = 1, otherwise gcd(n, k) separate polygons. The Turk's head
+  rule without the over and under.
+- **Mode locking.** Coupled oscillators (Huygens's pendulum clocks, 1665;
+  organ pipes; heart pacemaker cells) lock into simple ratios. Each ratio
+  holds over a band, an Arnold tongue, widest for the smallest numbers; the
+  locked ratio against detuning is the devil's staircase.
+- **Orbital resonances.** Io, Europa and Ganymede orbit Jupiter in times
+  1 : 2 : 4; Neptune and Pluto go 3 : 2. Simple ratios also clear gaps: the
+  Kirkwood gaps in the asteroid belt (3, 5/2, 7/3 and 2 orbits per orbit of
+  Jupiter) and the Cassini division in Saturn's rings (2 per orbit of
+  Mimas). Kepler heard the planets as intervals in *Harmonices Mundi* (1619).
+- **Polyrhythms and Euclidean rhythms.** a beats against b is the interval
+  ratio as time; coprime a and b meet once every a × b pulses, and 4 against
+  2 is 2 against 1 twice. Spreading k beats evenly over n pulses is Euclid's
+  algorithm (Bjorklund), and Toussaint (2005) showed it makes many
+  traditional rhythms: 3 over 8 is the tresillo `x..x..x.`, 5 over 8 the
+  cinquillo `x.xx.xx.`.
 
 ## Licence
 

@@ -78,6 +78,10 @@ table.wrap th, table.wrap td { white-space: normal; vertical-align: top; }
   border: 1px solid var(--rule); border-radius: 4px; padding: 3px 12px; cursor: pointer; }
 #spin:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .hint { font-size: 0.85rem; color: var(--ink-2); margin-top: 8px; }
+h3 { font-size: 1.08rem; margin: 28px 0 4px; }
+.stars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.stars svg { width: 100%; aspect-ratio: 1; display: block; }
+#ford { width: 100%; display: block; }
 footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-2); }
 </style>
 </head>
@@ -85,6 +89,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <main>
 <h1>Coprime pairs and musical intervals</h1>
 <p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave. On an oscilloscope, they are the Lissajous figures. Standing at the corner, they are the trees you can see.</p>
+
+<p class="credit"><strong>Whose ideas these are.</strong> The author came up with the connections on this page independently: the coprime grid and its rays, the number line with heights 1/(p² + q²) and its match to the musical intervals, Turk's head knots, turning Lissajous figures, the view from the orchard, and the ratio π² : 6 (at the age of 14). Some had been found before by others, and the page names them where known (Euclid's orchard, Thomae's function, Pólya, Tenney, Euler, Ptolemy, Helmholtz) for history and comparison. The last section, <a href="#further">Further connections</a>, is different: none of it is the author's.</p>
 
 <h2>Explore the grid</h2>
 <p>x runs left to right, y top to bottom, starting at (1, 1). A square is light when x and y are coprime and dark when they share a factor. Pick a square to see its pair, the ray it lies on, the Turk's head knot with x leads and y bights, and the Lissajous figure x : y.</p>
@@ -209,6 +215,48 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 </ul>
 <p>The Greeks didn't rank all these intervals. The Pythagoreans counted only the octave, fifth and fourth and their octave compounds as consonant: ratios that are <em>multiple</em> (n:1) or <em>superparticular</em> ((n+1):n) and built from 1, 2, 3 and 4. Ptolemy broke with them over the octave plus a fourth (8:3), which he heard as consonant though it is neither. Thirds and sixths were counted as consonances only from the Middle Ages on.</p>
 <p>Two limits. These are just-intonation ratios, and equal temperament only comes close: a piano's major third is 400 cents, 5:4 is 386. And how consonant an interval sounds also depends on register, timbre and context, which no formula sees.</p>
+
+<h2 id="further">Further connections (not the author's)</h2>
+<p class="credit">The author did not come up with anything in this section. These six connections were suggested by Claude, the AI assistant that helped build this page, and are standard results found by others.</p>
+
+<h3>Farey sequences and Ford circles</h3>
+<p>List every fraction in lowest terms with denominator up to n, in order: that is the Farey sequence. Two neighbours a/b and c/d in it always satisfy bc − ad = 1. On a circle drawn at each fraction p/q, resting on the number line with diameter 1/q², no two circles overlap, and two circles touch exactly when their fractions are Farey neighbours (Lester Ford, 1938). It is the number line's heights and gaps drawn as circles: next to p/q, no fraction with denominator up to n comes closer than 1/(qn).</p>
+<figure class="card">
+  <svg id="ford" viewBox="1 0.24 1 0.28" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Ford circles on the fractions between 1 and 2"></svg>
+  <figcaption>Ford circles on every fraction from 1 to 2 with denominator up to 24. The big circles on 1 and 2 are cut off at the top.</figcaption>
+</figure>
+
+<h3>The Stern–Brocot tree</h3>
+<p>Start with 1/1 and 2/1 and keep putting the <em>mediant</em> (a + c)/(b + d) between each pair of neighbours. Each round adds:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Round</th><th>New fractions between 1 and 2</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td class="num">3/2</td></tr>
+<tr><td class="num">2</td><td class="num">4/3 &nbsp; 5/3</td></tr>
+<tr><td class="num">3</td><td class="num">5/4 &nbsp; 7/5 &nbsp; 8/5 &nbsp; 7/4</td></tr>
+<tr><td class="num">4</td><td class="num">6/5 &nbsp; 9/7 &nbsp; 11/8 &nbsp; 10/7 &nbsp; 11/7 &nbsp; 13/8 &nbsp; 12/7 &nbsp; 9/5</td></tr>
+</tbody>
+</table>
+</div>
+<p>The fifth comes first, then the fourth and major sixth, then the major third, minor sixth and the two 7-based ratios: close to the consonance order, though the minor third, 6/5, waits until round 4. The full tree, from 0/1 and 1/0, makes every coprime pair exactly once, and its neighbours are always Ford circles that touch (Moritz Stern, 1858; Achille Brocot, 1861, a clockmaker choosing gear ratios).</p>
+
+<h3>Star polygons</h3>
+<p>Put n points on a circle and join every k-th one. If gcd(n, k) = 1 you draw one star without lifting the pen; otherwise it falls into gcd(n, k) separate polygons. It is the Turk's head rule with the over and under taken away: 5 points stepping 2 is the pentagram in one stroke, 6 stepping 2 is two triangles.</p>
+<figure class="card">
+  <div id="stars" class="stars"></div>
+  <figcaption>Left to right: 5 points stepping 2, 7 stepping 3, 6 stepping 2, 9 stepping 3. Each separate stroke has its own colour.</figcaption>
+</figure>
+
+<h3>Mode locking</h3>
+<p>Two oscillators that nudge each other, such as pendulum clocks on one beam (Christiaan Huygens noticed his in 1665), organ pipes side by side, or a heart's pacemaker cells, tend to lock into a simple ratio of their speeds and stay there. Each ratio p:q holds over a band of detuning, an <em>Arnold tongue</em>, and the bands are widest for the smallest numbers: 1:1, then 1:2 and 2:1, then 2:3 and 3:2. Plot the locked ratio against the detuning and you get the <em>devil's staircase</em>, a step at every fraction with the biggest steps at the simplest ones: the number line's heights again, made by physics.</p>
+
+<h3>Orbital resonances</h3>
+<p>Moons and planets that tug on each other often end up with orbital periods in a simple ratio. Io, Europa and Ganymede go round Jupiter in times in the ratio 1 : 2 : 4; Neptune goes round the Sun three times for every two of Pluto's. A simple ratio can also clear a space: the Kirkwood gaps in the asteroid belt sit where an asteroid would go round 3, 5/2, 7/3 or 2 times for each orbit of Jupiter, and the Cassini division in Saturn's rings is where a ring particle would orbit twice for each orbit of the moon Mimas. Gaps beside the simple fractions, as on the number line. Johannes Kepler went further in <em>Harmonices Mundi</em> (1619) and heard the planets' speeds as musical intervals.</p>
+
+<h3>Polyrhythms and Euclidean rhythms</h3>
+<p>A polyrhythm plays a beats against b in the same span, 3 against 2 or 4 against 3: the interval ratios played as time instead of pitch. Coprime a and b meet only at the start of each cycle of a × b pulses; 4 against 2 is just 2 against 1 played twice, as with the Lissajous figures.</p>
+<p>Spreading k beats as evenly as possible over n pulses is Euclid's gcd algorithm in disguise (Erik Bjorklund used it for timing in a particle accelerator), and Godfried Toussaint showed in 2005 that it makes many traditional rhythms. Three beats over eight is the Cuban tresillo, <code>x..x..x.</code>; five over eight is the cinquillo, <code>x.xx.xx.</code>.</p>
 
 <footer>
 Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Gernreich/coprime-intervals">coprime-intervals repository</a>. Public domain (CC0 1.0).
@@ -343,6 +391,36 @@ Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Ger
   });
   new ResizeObserver(draw).observe(canvas);
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", update);
+  // Ford circles: on p/q, diameter 1/q^2, resting on the line y = 0.52 (SVG y points down)
+  function drawFord() {
+    let out = "";
+    for (let q = 1; q <= 24; q++) for (let p = q; p <= 2 * q; p++) {
+      if (gcd(p, q) !== 1) continue;
+      const r = 1 / (2 * q * q);
+      out += `<circle cx="${p / q}" cy="${0.52 - r}" r="${r}" fill="none" stroke="${css("--ink")}" stroke-width="0.0015"/>`;
+    }
+    $("ford").innerHTML = out + `<line x1="1" x2="2" y1="0.52" y2="0.52" stroke="${css("--ink-2")}" stroke-width="0.002"/>`;
+  }
+  // Star polygons {n/k}: gcd(n, k) separate strokes, each its own colour
+  function drawStars() {
+    const colours = ["--s1", "--s2", "--s3", "--s4"];
+    $("stars").innerHTML = [[5, 2], [7, 3], [6, 2], [9, 3]].map(([n, k]) => {
+      const d = gcd(n, k), pt = i => [Math.sin(2 * Math.PI * i / n), -Math.cos(2 * Math.PI * i / n)];
+      let paths = "";
+      for (let j = 0; j < d; j++) {
+        let path = "";
+        for (let i = 0; i <= n / d; i++) {
+          const [x, y] = pt(j + i * k);
+          path += (i ? "L" : "M") + x.toFixed(4) + " " + y.toFixed(4);
+        }
+        paths += `<path d="${path}" fill="none" stroke="${css(colours[j])}" stroke-width="0.05" stroke-linejoin="round"/>`;
+      }
+      return `<svg viewBox="-1.1 -1.1 2.2 2.2" role="img" aria-label="${n} points stepping ${k}: ${d === 1 ? "one stroke" : d + " strokes"}">${paths}</svg>`;
+    }).join("");
+  }
+  const redrawStatic = () => { drawFord(); drawStars(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawStatic);
+  redrawStatic();
   update();
   setSpin(spinning);
 })();
