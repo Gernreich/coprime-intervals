@@ -209,7 +209,7 @@ its rank (equal scores share a rank):
   9:8 as smooth as the minor sixth.
 - **p² + q²**, the author's rule, is the squared distance from (p, q) to
   the origin. It is also the same as (p − q)² + 2pq: Tenney's measure plus a penalty
-  for wide intervals. The four rules agree on the first six places.
+  for wide intervals. The four rules agree on the first six places, except that Euler's ties the major sixth with the major third.
 
 The Greeks didn't rank all these intervals. The Pythagoreans counted only
 the octave, fifth and fourth and their octave compounds as consonant: ratios
