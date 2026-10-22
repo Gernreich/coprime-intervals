@@ -258,6 +258,15 @@ Ford circles and the star polygons.
   traditional rhythms: 3 over 8 is the tresillo `x..x..x.`, 5 over 8 the
   cinquillo `x.xx.xx.`.
 
+Also suggested by Claude and not the author's, left as links:
+[torus knots](https://en.wikipedia.org/wiki/Torus_knot) (the Turk's head rule on a doughnut),
+[spirographs](https://en.wikipedia.org/wiki/Spirograph),
+[continued fractions](https://en.wikipedia.org/wiki/Continued_fraction) and
+[12 equal temperament](https://en.wikipedia.org/wiki/12_equal_temperament) (why the piano has 12 notes),
+[the Tonnetz](https://en.wikipedia.org/wiki/Tonnetz),
+[billiards](https://en.wikipedia.org/wiki/Dynamical_billiards),
+[phyllotaxis](https://en.wikipedia.org/wiki/Phyllotaxis) and [the golden ratio](https://en.wikipedia.org/wiki/Golden_ratio).
+
 ## Licence
 
 [CC0 1.0](LICENSE): public domain.
