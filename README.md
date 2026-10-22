@@ -51,6 +51,13 @@ smaller arches either side. The gaps are real (no fraction with a small
 denominator lies close to a simple one like 3/2), but their width here comes
 from stopping at denominator 60.
 
+**6/π² again.** Of all the fractions p/q between 1 and 2 with q up to Q,
+the share already in lowest terms tends to 6/π², the same density as the
+grid's white blocks: 1103 of 1890 (58%) at Q = 60, 304,193 of 501,500
+(60.7%) at Q = 1000. So the number of lines is about 3Q²/π² (1094 for
+Q = 60). The figure also goes the other way round: 6/π² = 1/ζ(2), where
+ζ(2) = 1 + 1/4 + 1/9 + … = π²/6.
+
 ## Does the height order the intervals by consonance?
 
 Very nearly. Sorted by p² + q², the intervals come out unison, octave, fifth,
