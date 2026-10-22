@@ -106,6 +106,12 @@ denominator up to 60 (1103 of them). Each one has a vertical line of height
 1/(p² + q²), on a log scale so the short ones show. The just-intonation
 intervals are coloured by their traditional class and named.
 
+**Why p² + q².** The author chose this height because √(p² + q²) is the
+distance from the pair's square on the grid to the origin, (0, 0). The height
+is 1 over that distance squared, so pairs near the corner stand tall and far
+ones short. That choice is what makes the number line the same picture as
+the view from the orchard, below.
+
 The pattern repeats at every scale: each tall line stands in a gap with
 smaller arches either side. The gaps are real (no fraction with a small
 denominator lies close to a simple one like 3/2), but their width here comes
@@ -199,7 +205,8 @@ its rank (equal scores share a rank):
 - **Euler's gradus suavitatis** (1739): 1 plus the sum of (prime − 1) over
   the prime factors of p·q, with repeats. Coarse, so many ties, and it rates
   9:8 as smooth as the minor sixth.
-- **p² + q²** is the same as (p − q)² + 2pq: Tenney's measure plus a penalty
+- **p² + q²**, the author's rule, is the squared distance from (p, q) to
+  the origin. It is also the same as (p − q)² + 2pq: Tenney's measure plus a penalty
   for wide intervals. The four rules agree on the first six places.
 
 The Greeks didn't rank all these intervals. The Pythagoreans counted only
