@@ -113,7 +113,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <p style="margin:0 0 12px;font-size:0.95rem"><strong><a href="https://gernreich.github.io/">← All projects</a></strong></p>
 <p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave. On an oscilloscope, they are the Lissajous figures. Standing at the corner, they are the trees you can see.</p>
 
-<p class="credit"><strong>Whose ideas these are.</strong> The author came up with the connections on this page independently: the coprime grid and its rays, the number line with heights 1/(p² + q²) and its match to the musical intervals, Turk's head knots, turning Lissajous figures, the view from the orchard, and the ratio π² : 6 (at the age of 14). Some had been found before by others, and the page names them where known (Euclid's orchard, Thomae's function, Pólya, Tenney, Euler, Ptolemy, Helmholtz) for history and comparison. The last section, <a href="#further">Further connections</a>, is different: none of it is the author's.</p>
+<p class="credit"><strong>Whose ideas these are.</strong> The author came up with the connections on this page independently: the coprime grid and its rays, the number line with heights 1/(p² + q²) and its match to the musical intervals, Turk's head knots, turning Lissajous figures, the view from the orchard, the width of its pathways as the strength of a consonance, and the ratio π² : 6 (at the age of 14). Some had been found before by others, and the page names them where known (Euclid's orchard, Thomae's function, Pólya, Tenney, Euler, Ptolemy, Helmholtz) for history and comparison. The last section, <a href="#further">Further connections</a>, is different: none of it is the author's.</p>
 
 <h2>Explore the grid</h2>
 <p>x runs left to right, y top to bottom, starting at (1, 1). A square is light when x and y are coprime and dark when they share a factor. Pick a square to see its pair, the ray it lies on, the Turk's head knot with x leads and y bights, and the Lissajous figure x : y.</p>
@@ -184,7 +184,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   </div>
   <div class="hint" id="o-hint"></div>
 </div>
-<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within <em>Within ±</em> degrees (half a degree to start) of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within <em>Within ±</em> degrees (half a degree to start) of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. <strong>The wider the path, the stronger the consonance.</strong> The rows of trees nearest a pathway x : y run parallel to it, 1/√(x² + y²) away on either side, so the path is 2/√(x² + y²) wide; the readout gives it, and the lit lane is drawn that wide, less the trunks. Ordering by width is ordering by p² + q², the height on the number line: unison 1.414, octave 0.894, fifth 0.555, fourth 0.400, major sixth 0.343, major third 0.312, minor third 0.256, down to the tritone, 45 : 32, at 0.036. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
 
 <h2>The grid and its rays</h2>
 <figure>
@@ -720,7 +720,7 @@ function ratioName(x, y) {
   return n ? ` (${n})` : '';
 }
 // a ribbon down the middle of the lane, from the first tree out: the hidden points
-const laneGeo = new THREE.PlaneGeometry(1, 0.5);
+const laneGeo = new THREE.PlaneGeometry(1, 1);
 laneGeo.rotateX(-Math.PI / 2);
 laneGeo.translate(0.5, 0.05, 0);
 const lane = new THREE.Mesh(laneGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
@@ -768,9 +768,14 @@ function pointing() {
       lane.material.color.setHSL(hueOf(x, y), 0.9, 0.6);
     }
     lane.visible = names.visible;
-    lane.scale.z = standing ? 0.12 : 1;   // thin at the eye's feet
+    // the rows of trees beside the lane stand 1/|v| either side of its ray, so the path
+    // is 2/|v| wide between their centres, less one trunk clear of them
+    const v = Math.hypot(x, y), wide = 2 / v, clear = wide - W;
+    lane.scale.z = Math.max(0.02, clear);
     const side = Math.abs(off) < 0.05 ? 'dead on' : `${Math.abs(off).toFixed(2)}° to the ${off > 0 ? 'left' : 'right'}`;
-    text = `${where} · y/x = ${Math.tan(deg * Math.PI / 180).toFixed(3)} · lowest ratio within ±${WITHIN}°: <b>${x} : ${y}</b>${ratioName(x, y)}, ${side}`;
+    text = `${where} · y/x = ${Math.tan(deg * Math.PI / 180).toFixed(3)} · lowest ratio within ±${WITHIN}°: <b>${x} : ${y}</b>${ratioName(x, y)}, ${side}` +
+      ` · path 2/√${x * x + y * y} = <b>${wide.toFixed(3)}</b> wide, ` +
+      (clear > 0 ? `${clear.toFixed(3)} clear of the trunks` : 'closed by the trunks');
   }
   if (text !== said) { facingEl.innerHTML = said = text; }
 }

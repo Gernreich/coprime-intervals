@@ -10,7 +10,8 @@ on the same page.
 **Whose ideas these are.** The author came up with the connections here
 independently: the coprime grid and its rays, the number line with heights
 1/(p² + q²) and its match to the musical intervals, Turk's head knots,
-turning Lissajous figures, the view from the orchard, and the ratio π² : 6
+turning Lissajous figures, the view from the orchard, the width of its pathways
+as the strength of a consonance, and the ratio π² : 6
 (at the age of 14). Some had been found before by others, and they are named
 where known (Euclid's orchard, Thomae's function, Pólya, Tenney, Euler,
 Ptolemy, Helmholtz) for history and comparison. The last section, *Further
