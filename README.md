@@ -114,6 +114,10 @@ distance from the pair's square on the grid to the origin, (0, 0). The height
 is 1 over that distance squared, so pairs near the corner stand tall and far
 ones short. That choice is what makes the number line the same picture as
 the view from the orchard, below.
+The author's strength of an interval is 1/√(p² + q²), one over that distance;
+the height is its square, so the two put the intervals in the same order. In
+the 3D orchard the path along a pathway p : q is 2/√(p² + q²) wide, exactly
+twice the strength: the wider the path, the stronger the consonance.
 
 The pattern repeats at every scale: each tall line stands in a gap with
 smaller arches either side. The gaps are real (no fraction with a small
