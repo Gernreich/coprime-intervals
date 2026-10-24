@@ -171,6 +171,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   <div class="obar">
     <button id="o-above" aria-pressed="true">Turn it</button>
     <button id="o-stand" aria-pressed="false">Stand at (0, 0)</button>
+    <button id="o-light" aria-pressed="true">Light the pathway</button>
     <label><input type="checkbox" id="o-hidden"> Show the hidden trees</label>
     <label><input type="checkbox" id="o-octave"> Mark the octave</label>
     <label><input type="checkbox" id="o-open"> Open up the octave, 1:1 to 1:2</label>
@@ -186,7 +187,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   <div class="hint" id="o-hint"></div>
 </div>
 <p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Open up the octave, 1:1 to 1:2</em> keeps only the trees in that wedge and stretches it five times across its middle bearing, so its 18.4° fan out to about 78° and the pathways between the unison and the octave stand apart; the trees stretch with it, and the readout still gives true bearings and widths.</p>
-<p><em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within <em>Within ±</em> degrees (half a degree to start) of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+<p><em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within <em>Within ±</em> degrees (half a degree to start) of the way you are looking and lights its lane (<em>Light the pathway</em> turns the light on and off): standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
 
 <h3>The width of a pathway</h3>
 <p><strong>The wider the path, the stronger the consonance.</strong> The author's strength of an interval x : y is 1/√(x² + y²), one over the pair's distance from (0, 0). That is exactly how far the nearest rows of trees stand from a pathway on either side: they run parallel to its ray, and a tree (a, b) in the nearest row with |a·y − b·x| = 1 makes a triangle of area ½ with (0, 0) and (x, y), so its height above the ray is 1/√(x² + y²). The path is therefore 2/√(x² + y²) wide between the centres of the rows, twice the strength. The readout gives both for the pathway straight ahead, and the lit lane is drawn that wide, less the thickness of the trunks.</p>
@@ -684,7 +685,7 @@ function declutter() {
     if (at.z < 1) box.push(r);   // hidden or not, it holds its place: a less simple name may not take it
   }
 }
-document.getElementById('o-names').addEventListener('change', e => { names.visible = e.target.checked; lane.visible = names.visible && !!current; });
+document.getElementById('o-names').addEventListener('change', e => { names.visible = e.target.checked; lane.visible = lit && names.visible && !!current; });
 
 // --- turning it from above: OrbitControls pans; zoom toward the pointer and
 // double-click a tree to turn round it, as on the other viewers
@@ -781,6 +782,13 @@ laneGeo.translate(0.5, 0.05, 0);
 const lane = new THREE.Mesh(laneGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
 lane.visible = false;
 world.add(lane);
+let lit = true;   // the Light the pathway button
+const lightBtn = document.getElementById('o-light');
+lightBtn.addEventListener('click', () => {
+  lit = !lit;
+  lightBtn.setAttribute('aria-pressed', lit);
+  lane.visible = lit && names.visible && !!current;
+});
 let current = null, said = '';
 const north = new THREE.Vector3(), up = new THREE.Vector3(), far = new THREE.Vector3(), at0 = new THREE.Vector3();
 const oneEl = document.getElementById('o-one');
@@ -823,7 +831,7 @@ function pointing() {
       lane.position.set(x, 0, y);
       lane.material.color.setHSL(hueOf(x, y), 0.9, 0.6);
     }
-    lane.visible = names.visible;
+    lane.visible = lit && names.visible;
     // the rows of trees beside the lane stand 1/|v| either side of its ray, so the path
     // is 2/|v| wide between their centres, less one trunk clear of them
     const v = Math.hypot(x, y), wide = 2 / v, clear = wide - W;
