@@ -184,7 +184,32 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   </div>
   <div class="hint" id="o-hint"></div>
 </div>
-<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within <em>Within ±</em> degrees (half a degree to start) of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. <strong>The wider the path, the stronger the consonance.</strong> The rows of trees nearest a pathway x : y run parallel to it, 1/√(x² + y²) away on either side: the author's strength of the interval, one over its distance from (0, 0). So the path is 2/√(x² + y²) wide, exactly twice the strength; the readout gives both, and the lit lane is drawn that wide, less the trunks. Ordering by width is ordering by strength, and by p² + q², the height on the number line: unison 1.414, octave 0.894, fifth 0.555, fourth 0.400, major sixth 0.343, major third 0.312, minor third 0.256, down to the tritone, 45 : 32, at 0.036. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order.</p>
+<p><em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within <em>Within ±</em> degrees (half a degree to start) of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+
+<h3>The width of a pathway</h3>
+<p><strong>The wider the path, the stronger the consonance.</strong> The author's strength of an interval x : y is 1/√(x² + y²), one over the pair's distance from (0, 0). That is exactly how far the nearest rows of trees stand from a pathway on either side: they run parallel to its ray, and a tree (a, b) in the nearest row with |a·y − b·x| = 1 makes a triangle of area ½ with (0, 0) and (x, y), so its height above the ray is 1/√(x² + y²). The path is therefore 2/√(x² + y²) wide between the centres of the rows, twice the strength. The readout gives both for the pathway straight ahead, and the lit lane is drawn that wide, less the thickness of the trunks.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Interval</th><th>x : y</th><th>x² + y²</th><th>Strength 1/√(x² + y²)</th><th>Path width</th></tr></thead>
+<tbody>
+<tr><td>unison</td><td class="num">1 : 1</td><td class="num">2</td><td class="num">0.707</td><td class="num">1.414</td></tr>
+<tr><td>octave</td><td class="num">2 : 1</td><td class="num">5</td><td class="num">0.447</td><td class="num">0.894</td></tr>
+<tr><td>perfect 5th</td><td class="num">3 : 2</td><td class="num">13</td><td class="num">0.277</td><td class="num">0.555</td></tr>
+<tr><td>perfect 4th</td><td class="num">4 : 3</td><td class="num">25</td><td class="num">0.200</td><td class="num">0.400</td></tr>
+<tr><td>major 6th</td><td class="num">5 : 3</td><td class="num">34</td><td class="num">0.171</td><td class="num">0.343</td></tr>
+<tr><td>major 3rd</td><td class="num">5 : 4</td><td class="num">41</td><td class="num">0.156</td><td class="num">0.312</td></tr>
+<tr><td>minor 3rd</td><td class="num">6 : 5</td><td class="num">61</td><td class="num">0.128</td><td class="num">0.256</td></tr>
+<tr><td>minor 6th</td><td class="num">8 : 5</td><td class="num">89</td><td class="num">0.106</td><td class="num">0.212</td></tr>
+<tr><td>major 2nd</td><td class="num">9 : 8</td><td class="num">145</td><td class="num">0.083</td><td class="num">0.166</td></tr>
+<tr><td>major 7th</td><td class="num">15 : 8</td><td class="num">289</td><td class="num">0.059</td><td class="num">0.118</td></tr>
+<tr><td>minor 2nd</td><td class="num">16 : 15</td><td class="num">481</td><td class="num">0.046</td><td class="num">0.091</td></tr>
+<tr><td>tritone</td><td class="num">45 : 32</td><td class="num">3049</td><td class="num">0.018</td><td class="num">0.036</td></tr>
+</tbody>
+</table>
+</div>
+<p>Ordering by path width is the same as ordering by strength, and by p² + q², the height on the <a href="#number-line">number line</a>, which is the strength squared. Over the sixteen intervals in the <a href="#ranking">ranking below</a>, the other measures come close but not all the way: Spearman's rank correlation with the path width is 0.999 for the Pythagorean p + q, 0.997 for Tenney's p·q and 0.896 for Euler's gradus.</p>
+
 
 <h2>The grid and its rays</h2>
 <figure>
@@ -227,7 +252,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <li><strong>The far trees make a wall.</strong> However thin the trees, enough of them far enough out cover the whole horizon: the dark band along the bottom, and the dense floor of the number line. This is Pólya's orchard problem. Trees with no thickness at all would leave a line of sight to infinity in every direction that is not a ratio of whole numbers.</li>
 </ul>
 
-<h2>Does the height order the intervals by consonance?</h2>
+<h2 id="ranking">Does the height order the intervals by consonance?</h2>
 <p>Very nearly. Sorted by p² + q², the intervals come out unison, octave, fifth, fourth, major sixth, major third, minor third, minor sixth: the order Helmholtz gave for the consonances in <em>On the Sensations of Tone</em> (1863). Dissonances follow, the minor second near the end and the tritone last. The two ratios with a 7 in them, 7:4 and 7:5, come in above the minor sixth; Western 12-tone music has no 7-based ratios, so the usual lists leave them out.</p>
 <p>Simple ratios sound smooth because two notes in the ratio p:q share overtones: their waveforms line up every p cycles of one and q cycles of the other. Smaller numbers mean more shared overtones and less beating.</p>
 <p>Four rules for how simple p:q is. Each cell is the score and, in brackets, the rank; equal scores share a rank.</p>
