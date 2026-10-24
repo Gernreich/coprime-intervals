@@ -182,7 +182,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   </div>
   <div class="hint" id="o-hint"></div>
 </div>
-<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout gives the ratio you are looking along and lights its lane: standing, the way you face; turning, the lane that runs straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within half a degree of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
 
 <h2>The grid and its rays</h2>
 <figure>
@@ -709,12 +709,9 @@ function look() {
 }
 // which ratio the view looks along. Standing, the bearing the eye faces; turning,
 // the lane that runs straight up the screen from (0, 0), "north" as the plane is
-// turned. y/x is the tangent of the bearing. The pathway named is the strongest the
-// line runs down: the lane of x : y is the empty strip 1/|v| either side of its ray,
-// |v| = sqrt(x^2 + y^2), from its first tree to the edge of the square. A line off
-// it by an angle a stays inside for 1/(|v| a), so it covers that run times the
-// lane's width 1/|v|; the coprime x : y up to 19 with the most is named, its
-// label always drawn and its lane lit on the ground.
+// turned. y/x is the tangent of the bearing. The ratio named is the lowest coprime
+// x : y up to 19 (least x + y) whose ray lies within WITHIN degrees of that bearing,
+// its label always drawn and its lane lit on the ground.
 const facingEl = document.getElementById('o-facing');
 function ratioName(x, y) {
   const n = INTERVALS[Math.max(x, y) + '/' + Math.min(x, y)];
@@ -730,10 +727,7 @@ scene.add(lane);
 let current = null, said = '';
 const north = new THREE.Vector3(), up = new THREE.Vector3(), far = new THREE.Vector3(), at0 = new THREE.Vector3();
 const oneEl = document.getElementById('o-one');
-function strength(deg, [x, y]) {
-  const v = Math.hypot(x, y), a = Math.abs(deg * Math.PI / 180 - Math.atan2(y, x)), edge = N / Math.max(x, y) * v;
-  return Math.max(0, Math.min(edge, a > 0 ? 1 / (v * a) : edge) - v) / v;
-}
+const WITHIN = 0.5;
 function pointing() {
   let deg, where;
   if (standing) {
@@ -749,15 +743,15 @@ function pointing() {
     deg = Math.atan2(north.z, north.x) * 180 / Math.PI;
     where = `Straight up the screen from (0, 0): ${deg.toFixed(1)}°`;
   }
-  let text, best = null, most = 0;
-  if (deg !== null && deg >= 0 && deg <= 90)
-    for (const r of PATHS) { const k = strength(deg, r); if (k > most) { most = k; best = r; } }
+  let text, best = null;
+  if (deg !== null && deg >= 0 && deg <= 90)   // PATHS runs simplest first
+    best = PATHS.find(([x, y]) => Math.abs(deg - Math.atan2(y, x) * 180 / Math.PI) <= WITHIN) || null;
   if (deg === null || deg < 0 || deg > 90) {
     current = null; lane.visible = false;
     text = `${where}, looking away from the orchard`;
   } else if (!best) {
     current = null; lane.visible = false;
-    text = `${where} · no pathway up to ${LIMIT} : ${LIMIT} runs this way`;
+    text = `${where} · no ratio up to ${LIMIT} : ${LIMIT} within ±${WITHIN}°`;
   } else {
     const [x, y] = best, off = deg - Math.atan2(y, x) * 180 / Math.PI;
     if (!current || current.ray !== best) {
@@ -770,7 +764,7 @@ function pointing() {
     lane.visible = names.visible;
     lane.scale.z = standing ? 0.12 : 1;   // thin at the eye's feet
     const side = Math.abs(off) < 0.05 ? 'dead on' : `${Math.abs(off).toFixed(2)}° to the ${off > 0 ? 'left' : 'right'}`;
-    text = `${where} · y/x = ${Math.tan(deg * Math.PI / 180).toFixed(3)} · strongest pathway <b>${x} : ${y}</b>${ratioName(x, y)}, ${side}`;
+    text = `${where} · y/x = ${Math.tan(deg * Math.PI / 180).toFixed(3)} · lowest ratio within ±${WITHIN}°: <b>${x} : ${y}</b>${ratioName(x, y)}, ${side}`;
   }
   if (text !== said) { facingEl.innerHTML = said = text; }
 }
