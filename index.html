@@ -100,6 +100,7 @@ h3 { font-size: 1.08rem; margin: 28px 0 4px; }
 .obar button:focus-visible, .obar input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .obar label { display: inline-flex; align-items: center; gap: 6px; }
 .obar input[type=range] { width: 110px; }
+#o-within-v { min-width: 3.2em; font-variant-numeric: tabular-nums; }
 #o-facing:empty { display: none; }
 #o-facing, #o-readout { flex-basis: 100%; min-height: 1.6em; font-variant-numeric: tabular-nums; }
 #o-readout b { font-size: 1.05rem; }
@@ -175,6 +176,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     <label><input type="checkbox" id="o-hue" checked> Colour by direction</label>
     <label><input type="checkbox" id="o-names" checked> Name the pathways</label>
     <label><input type="checkbox" id="o-one"> Only the one straight ahead</label>
+    <label>Within ±<input type="range" id="o-within" min="0.05" max="5" step="0.05" value="0.5"><span id="o-within-v">0.5°</span></label>
     <label>Thickness <input type="range" id="o-thick" min="0.02" max="0.5" step="0.01" value="0.16"></label>
     <label>Height <input type="range" id="o-tall" min="1" max="12" step="0.5" value="1"></label>
     <div id="o-facing"></div>
@@ -182,7 +184,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   </div>
   <div class="hint" id="o-hint"></div>
 </div>
-<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within half a degree of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within <em>Within ±</em> degrees (half a degree to start) of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
 
 <h2>The grid and its rays</h2>
 <figure>
@@ -727,7 +729,11 @@ scene.add(lane);
 let current = null, said = '';
 const north = new THREE.Vector3(), up = new THREE.Vector3(), far = new THREE.Vector3(), at0 = new THREE.Vector3();
 const oneEl = document.getElementById('o-one');
-const WITHIN = 0.5;
+let WITHIN = 0.5;   // the narrowness slider
+document.getElementById('o-within').addEventListener('input', e => {
+  WITHIN = +e.target.value;
+  document.getElementById('o-within-v').textContent = WITHIN + '°';
+});
 function pointing() {
   let deg, where;
   if (standing) {
