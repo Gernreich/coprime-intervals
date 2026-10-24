@@ -173,6 +173,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     <button id="o-stand" aria-pressed="false">Stand at (0, 0)</button>
     <label><input type="checkbox" id="o-hidden"> Show the hidden trees</label>
     <label><input type="checkbox" id="o-octave"> Mark the octave</label>
+    <label><input type="checkbox" id="o-open"> Open up the octave, 1:1 to 1:2</label>
     <label><input type="checkbox" id="o-hue" checked> Colour by direction</label>
     <label><input type="checkbox" id="o-names" checked> Name the pathways</label>
     <label><input type="checkbox" id="o-one"> Only the one straight ahead</label>
@@ -184,7 +185,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   </div>
   <div class="hint" id="o-hint"></div>
 </div>
-<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order.</p>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Open up the octave, 1:1 to 1:2</em> keeps only the trees in that wedge and stretches it five times across its middle bearing, so its 18.4° fan out to about 78° and the pathways between the unison and the octave stand apart; the trees stretch with it, and the readout still gives true bearings and widths.</p>
 <p><em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout names the lowest ratio within <em>Within ±</em> degrees (half a degree to start) of the way you are looking and lights its lane: standing, the way you face; turning, straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
 
 <h3>The width of a pathway</h3>
@@ -543,11 +544,31 @@ const sun = new THREE.DirectionalLight(0xffffff, 0.7);
 sun.position.set(-60, 120, -30);
 scene.add(sun);
 
+// everything on the ground sits in world, whose matrix is the identity, or, with the
+// octave opened up, a stretch across the octave's middle bearing: the wedge from 1:1
+// to 1:2 (45 to 63.4 degrees, 18.4 wide) fans out to about 78 degrees, so the
+// pathways inside it spread apart. Bearings are read back through the inverse.
+const world = new THREE.Group();
+world.matrixAutoUpdate = false;
+scene.add(world);
+const MID = (45 + Math.atan(2) * 180 / Math.PI) / 2 * Math.PI / 180, SPREAD = 5;
+const stretch = new THREE.Matrix4(), unstretch = new THREE.Matrix4();
+let opened = false;
+const inOctave = (x, y) => y >= x && y <= 2 * x;
+function setStretch() {
+  const wx = -Math.sin(MID), wz = Math.cos(MID), k = opened ? SPREAD - 1 : 0;   // scale k + 1 across the middle bearing
+  stretch.set(1 + k * wx * wx, 0, k * wx * wz, 0,  0, 1, 0, 0,  k * wx * wz, 0, 1 + k * wz * wz, 0,  0, 0, 0, 1);
+  unstretch.copy(stretch).invert();
+  world.matrix.copy(stretch);
+  world.matrixWorldNeedsUpdate = true;
+}
+setStretch();
+
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(N + 1, N + 1),
   new THREE.MeshStandardMaterial({ color: 0x5f6b48, roughness: 1 }));
 ground.rotation.x = -Math.PI / 2;
 ground.position.set((N + 1) / 2, 0, (N + 1) / 2);
-scene.add(ground);
+world.add(ground);
 
 // one unit cylinder per tree, scaled to thickness and height
 const geo = new THREE.CylinderGeometry(0.5, 0.5, 1, 10);
@@ -559,7 +580,7 @@ const ghosts = new THREE.InstancedMesh(geo, ghostMat, hid.length);
 ghosts.visible = false;
 // r128 bounds an InstancedMesh by its one cylinder at the origin, so it would cull the lot
 trees.frustumCulled = ghosts.frustumCulled = false;
-scene.add(trees, ghosts);
+world.add(trees, ghosts);
 const green = new THREE.Color(0x2f5a34), col = new THREE.Color();
 function paint() {
   const byHue = document.getElementById('o-hue').checked;
@@ -571,8 +592,9 @@ let W = 0.16, H = 1, standing = false;
 function plant() {
   W = +document.getElementById('o-thick').value;
   H = +document.getElementById('o-tall').value;
-  seen.forEach(([x, y], i) => trees.setMatrixAt(i, m.makeScale(W, H, W).setPosition(x, 0, y)));
-  hid.forEach(([x, y], i) => ghosts.setMatrixAt(i, m.makeScale(W, H, W).setPosition(x, 0, y)));
+  const plantAt = (x, y) => (opened && !inOctave(x, y) ? m.makeScale(0, 0, 0) : m.makeScale(W, H, W)).setPosition(x, 0, y);
+  seen.forEach(([x, y], i) => trees.setMatrixAt(i, plantAt(x, y)));
+  hid.forEach(([x, y], i) => ghosts.setMatrixAt(i, plantAt(x, y)));
   trees.instanceMatrix.needsUpdate = ghosts.instanceMatrix.needsUpdate = true;
   if (standing) placeEye();
 }
@@ -581,7 +603,7 @@ plant(); paint();
 // where you stand, and the octave's two rays, (1,1) and (1,2), on the ground
 const you = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.04, 24), new THREE.MeshBasicMaterial({ color: 0xe34948 }));
 you.position.set(0, 0.02, 0);
-scene.add(you);
+world.add(you);
 const octave = new THREE.Group();
 for (const [x, y] of [[1, 1], [1, 2]]) {
   const k = N * 1.05 / Math.max(x, y);
@@ -595,7 +617,7 @@ wedgeMesh.rotation.x = Math.PI / 2;      // shape's (x, y) onto the ground's (x,
 wedgeMesh.position.y = 0.02;
 octave.add(wedgeMesh);
 octave.visible = false;
-scene.add(octave);
+world.add(octave);
 
 // labels on the ground
 function label(text, x, z, size = 3) {
@@ -632,12 +654,19 @@ for (const [x, y] of PATHS) {
   g.fillText(`${x}:${y}`, 64, 34);
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), sizeAttenuation: false, depthTest: false }));
   const k = (N + 6) / Math.max(x, y);
-  sp.position.set(x * k, 0, y * k);
+  sp.userData.base = new THREE.Vector3(x * k, 0, y * k);
+  sp.position.copy(sp.userData.base);
   sp.renderOrder = 1;
   sp.userData.ray = [x, y];
   names.add(sp);
 }
 scene.add(names);
+function placeNames() {   // the labels stay out of world, so they keep their shape: move them through the stretch
+  for (const sp of names.children) {
+    const y = sp.position.y;
+    sp.position.copy(sp.userData.base).applyMatrix4(stretch).setY(y);
+  }
+}
 const box = [], at = new THREE.Vector3();
 let tag = 0.035;   // label height as a share of the view at distance 1: larger when standing
 function declutter() {
@@ -646,6 +675,7 @@ function declutter() {
   box.length = 0;
   const order = current ? [current.sprite, ...names.children.filter(sp => sp !== current.sprite)] : names.children;
   for (const sp of order) {
+    if (opened && !inOctave(...sp.userData.ray)) { sp.visible = false; continue; }
     at.copy(sp.position).project(camera);
     const x = (at.x + 1) / 2 * canvas.clientWidth, y = (1 - at.y) / 2 * canvas.clientHeight - (0.5 - sp.center.y) * h;
     const r = [x - w * 0.42, y - h * 0.4, x + w * 0.42, y + h * 0.4];
@@ -750,7 +780,7 @@ laneGeo.rotateX(-Math.PI / 2);
 laneGeo.translate(0.5, 0.05, 0);
 const lane = new THREE.Mesh(laneGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
 lane.visible = false;
-scene.add(lane);
+world.add(lane);
 let current = null, said = '';
 const north = new THREE.Vector3(), up = new THREE.Vector3(), far = new THREE.Vector3(), at0 = new THREE.Vector3();
 const oneEl = document.getElementById('o-one');
@@ -762,15 +792,16 @@ document.getElementById('o-within').addEventListener('input', e => {
 function pointing() {
   let deg, where;
   if (standing) {
-    deg = ((yaw % 360) + 360) % 360;
+    north.set(Math.cos(yaw * Math.PI / 180), 0, Math.sin(yaw * Math.PI / 180)).applyMatrix4(unstretch);
+    deg = Math.atan2(north.z, north.x) * 180 / Math.PI;
     where = `Facing ${deg.toFixed(1)}°`;
-    if (deg > 90 + camera.fov / 2 && deg < 360 - camera.fov / 2) deg = null;
   } else {
     // the ground line through (0, 0) that the screen shows upright lies in the plane
     // through the eye, (0, 0) and the camera's up; it is where that plane meets the ground
     north.copy(camera.position).negate().cross(up.set(0, 1, 0).applyQuaternion(camera.quaternion));
     north.set(-north.z, 0, north.x).normalize();
     if (far.copy(north).multiplyScalar(50).project(camera).y < at0.set(0, 0, 0).project(camera).y) north.negate();
+    north.applyMatrix4(unstretch);
     deg = Math.atan2(north.z, north.x) * 180 / Math.PI;
     where = `Straight up the screen from (0, 0): ${deg.toFixed(1)}°`;
   }
@@ -826,7 +857,7 @@ function mode(s) {
   above.setAttribute('aria-pressed', !s); stand.setAttribute('aria-pressed', s);
   controls.enabled = !s;
   you.visible = !s;
-  labels.forEach(l => { l.visible = !s; });
+  labels.forEach(l => { l.visible = !s && !opened; });
   if (s) {
     saved.c = camera.position.clone(); saved.t = controls.target.clone();
     yaw = 45; pitch = 4; camera.fov = 60; camera.near = 0.01;
@@ -851,6 +882,24 @@ above.addEventListener('click', () => mode(false));
 stand.addEventListener('click', () => mode(true));
 document.getElementById('o-hidden').addEventListener('change', e => { ghosts.visible = e.target.checked; });
 document.getElementById('o-octave').addEventListener('change', e => { octave.visible = e.target.checked; });
+document.getElementById('o-open').addEventListener('change', e => {
+  opened = e.target.checked;
+  setStretch(); plant(); placeNames();
+  labels.forEach(l => { l.visible = !standing && !opened; });
+  const u = new THREE.Vector3(Math.cos(MID), 0, Math.sin(MID));   // the octave's middle bearing, which the stretch keeps
+  if (standing) {
+    // face the middle; wide enough for the fanned-out wedge, about 78 degrees, with some to spare
+    yaw = opened ? MID * 180 / Math.PI : 45; pitch = 4;
+    camera.fov = opened ? 2 * Math.atan(Math.tan(44 * Math.PI / 180) / camera.aspect) * 180 / Math.PI : 60;
+    camera.updateProjectionMatrix();
+    look();
+  } else if (opened) {
+    const t = u.clone().multiplyScalar(48);
+    glide(t, t.clone().add(u.clone().multiplyScalar(-118)).setY(105));
+  } else {
+    glide(HOME_T.clone(), HOME_C.clone());
+  }
+});
 document.getElementById('o-hue').addEventListener('change', paint);
 document.getElementById('o-thick').addEventListener('input', plant);
 document.getElementById('o-tall').addEventListener('input', plant);
