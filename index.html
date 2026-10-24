@@ -182,7 +182,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   </div>
   <div class="hint" id="o-hint"></div>
 </div>
-<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction, as on the grid: the 1 : 1 diagonal is red and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout gives the ratio you are looking along and lights its lane: standing, the way you face; turning, the lane that runs straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction: the 1 : 1 diagonal is red, the rays toward the x axis green and toward the y axis blue, and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout gives the ratio you are looking along and lights its lane: standing, the way you face; turning, the lane that runs straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
 
 <h2>The grid and its rays</h2>
 <figure>
@@ -492,8 +492,10 @@ const hint = document.getElementById('o-hint');
 if (!window.THREE || !THREE.OrbitControls) { readout.textContent = 'The 3D view needs three.js, which did not load.'; return; }
 
 const gcd = (a, b) => { while (b) [a, b] = [b, a % b]; return a; };
-// Hue by direction, as ray_colour() in coprime_intervals.py: the 1:1 diagonal is red.
-const hueOf = (x, y) => ((((Math.atan2(y, x) * 180 / Math.PI) - 45) / 90 * 0.8) % 1 + 1) % 1;
+// Hue by direction: ray_colour() in coprime_intervals.py mirrored about the 1:1
+// diagonal, which stays red, so the x side (left as the page opens) is green and
+// the y side blue.
+const hueOf = (x, y) => ((((Math.atan2(x, y) * 180 / Math.PI) - 45) / 90 * 0.8) % 1 + 1) % 1;
 const INTERVALS = { '1/1': 'unison', '16/15': 'minor 2nd', '9/8': 'major 2nd', '6/5': 'minor 3rd',
   '5/4': 'major 3rd', '4/3': 'perfect 4th', '7/5': 'septimal tritone', '45/32': 'tritone',
   '3/2': 'perfect 5th', '8/5': 'minor 6th', '5/3': 'major 6th', '7/4': 'harmonic 7th',
