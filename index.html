@@ -91,8 +91,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 </head>
 <body>
 <main>
-<p style="margin:0 0 12px;font-size:0.95rem"><a href="https://gernreich.github.io/">← All projects</a></p>
 <h1>Coprime pairs and musical intervals</h1>
+<p style="margin:0 0 12px;font-size:0.95rem"><strong><a href="https://gernreich.github.io/">← All projects</a></strong></p>
 <p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave. On an oscilloscope, they are the Lissajous figures. Standing at the corner, they are the trees you can see.</p>
 
 <p class="credit"><strong>Whose ideas these are.</strong> The author came up with the connections on this page independently: the coprime grid and its rays, the number line with heights 1/(p² + q²) and its match to the musical intervals, Turk's head knots, turning Lissajous figures, the view from the orchard, and the ratio π² : 6 (at the age of 14). Some had been found before by others, and the page names them where known (Euclid's orchard, Thomae's function, Pólya, Tenney, Euler, Ptolemy, Helmholtz) for history and comparison. The last section, <a href="#further">Further connections</a>, is different: none of it is the author's.</p>
@@ -163,7 +163,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <p>The same figure sets the number line's count. Of all the fractions p/q from 1 to 2 with q up to Q, the share in lowest terms tends to 6/π²: 1103 of 1890 (58%) at Q = 60, 304,193 of 501,500 (60.7%) at Q = 1000. So the number line has about 3Q²/π² lines.</p>
 <p class="credit">The author found this ratio, π² : 6, independently at the age of 14.</p>
 
-<h2>The number line</h2>
+<h2 id="number-line">The number line</h2>
 <figure>
   <img src="images/number-line.png" alt="Every coprime fraction between 1 and 2 as a vertical line of height 1 over p squared plus q squared, on a log scale, with the musical intervals named and coloured" width="2716" height="1406" loading="lazy">
   <figcaption>Every coprime p/q from 1 to 2 with denominator up to 60, height 1/(p² + q²) on a log scale. The just-intonation intervals are named and coloured by class.</figcaption>
@@ -171,7 +171,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <p><strong>Why p² + q².</strong> The author chose this height because √(p² + q²) is the distance from the pair's square on the grid to the origin, (0, 0). The height is 1 over that distance squared, so pairs near the corner stand tall and far ones short. That choice is what makes the number line the same picture as the view from the orchard, below.</p>
 <p>The pattern repeats at every scale: each tall line stands in a gap with smaller arches either side. The gaps are real, since no fraction with a small denominator lies close to a simple one like 3/2, but their width here comes from stopping at denominator 60.</p>
 
-<h2>Standing in the orchard</h2>
+<h2 id="orchard">Standing in the orchard</h2>
+<p><strong><a href="orchard.html">Walk round the orchard in 3D</a></strong>: a tree on every coprime pair out to 100 × 100, to turn from above or to stand in at (0, 0).</p>
 <figure>
   <img src="images/orchard.png" alt="Panorama from the origin of thin trees on every coprime pair, tallest at 45 degrees, and below it the stretch between the trees at (1,2) and (1,2) with the musical intervals coloured" width="2437" height="1741" loading="lazy">
   <figcaption>Top: the view from (0, 0) with a thin tree, one unit tall, on every coprime pair out to distance 300, eye on the ground. Bottom: the stretch between the trees at (1, 1) and (1, 2), where the ratio y/x runs 1 to 2 left to right, just as the number line does.</figcaption>
