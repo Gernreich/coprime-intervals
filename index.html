@@ -174,6 +174,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     <label><input type="checkbox" id="o-octave"> Mark the octave</label>
     <label><input type="checkbox" id="o-hue" checked> Colour by direction</label>
     <label><input type="checkbox" id="o-names" checked> Name the pathways</label>
+    <label><input type="checkbox" id="o-one"> Only the one straight ahead</label>
     <label>Thickness <input type="range" id="o-thick" min="0.02" max="0.5" step="0.01" value="0.16"></label>
     <label>Height <input type="range" id="o-tall" min="1" max="12" step="0.5" value="1"></label>
     <div id="o-facing"></div>
@@ -181,7 +182,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   </div>
   <div class="hint" id="o-hint"></div>
 </div>
-<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction, as on the grid: the 1 : 1 diagonal is red and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout gives the ratio you are looking along and lights its lane: standing, the way you face; turning, the way from (0, 0) to the middle of the view. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction, as on the grid: the 1 : 1 diagonal is red and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of every coprime ray up to 19 × 19: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. As you move, the line above the readout gives the ratio you are looking along and lights its lane: standing, the way you face; turning, the lane that runs straight up the screen from (0, 0). <em>Only the one straight ahead</em> hides every other name. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
 
 <h2>The grid and its rays</h2>
 <figure>
@@ -620,7 +621,7 @@ function declutter() {
     const x = (at.x + 1) / 2 * canvas.clientWidth, y = (1 - at.y) / 2 * canvas.clientHeight - (0.5 - sp.center.y) * h;
     const r = [x - w * 0.42, y - h * 0.4, x + w * 0.42, y + h * 0.4];
     sp.scale.set(2 * tag, tag, 1);
-    sp.visible = at.z < 1 && !box.some(b => r[0] < b[2] && b[0] < r[2] && r[1] < b[3] && b[1] < r[3]);
+    sp.visible = oneEl.checked ? sp === (current && current.sprite) : at.z < 1 && !box.some(b => r[0] < b[2] && b[0] < r[2] && r[1] < b[3] && b[1] < r[3]);
     if (at.z < 1) box.push(r);   // hidden or not, it holds its place: a less simple name may not take it
   }
 }
@@ -705,8 +706,12 @@ function look() {
   camera.lookAt(camera.position.x + Math.cos(b) * Math.cos(a), camera.position.y + Math.sin(b), camera.position.z + Math.cos(b) * Math.sin(a));
 }
 // which ratio the view looks along. Standing, the bearing the eye faces; turning,
-// the bearing from (0, 0) of the point the view turns round, at its middle. y/x is
-// the tangent of the bearing; the nearest coprime x : y up to 19 is named, its
+// the lane that runs straight up the screen from (0, 0), "north" as the plane is
+// turned. y/x is the tangent of the bearing. The pathway named is the strongest the
+// line runs down: the lane of x : y is the empty strip 1/|v| either side of its ray,
+// |v| = sqrt(x^2 + y^2), from its first tree to the edge of the square. A line off
+// it by an angle a stays inside for 1/(|v| a), so it covers that run times the
+// lane's width 1/|v|; the coprime x : y up to 19 with the most is named, its
 // label always drawn and its lane lit on the ground.
 const facingEl = document.getElementById('o-facing');
 function ratioName(x, y) {
@@ -721,6 +726,12 @@ const lane = new THREE.Mesh(laneGeo, new THREE.MeshBasicMaterial({ color: 0xffff
 lane.visible = false;
 scene.add(lane);
 let current = null, said = '';
+const north = new THREE.Vector3(), up = new THREE.Vector3(), far = new THREE.Vector3(), at0 = new THREE.Vector3();
+const oneEl = document.getElementById('o-one');
+function strength(deg, [x, y]) {
+  const v = Math.hypot(x, y), a = Math.abs(deg * Math.PI / 180 - Math.atan2(y, x)), edge = N / Math.max(x, y) * v;
+  return Math.max(0, Math.min(edge, a > 0 ? 1 / (v * a) : edge) - v) / v;
+}
 function pointing() {
   let deg, where;
   if (standing) {
@@ -728,18 +739,25 @@ function pointing() {
     where = `Facing ${deg.toFixed(1)}°`;
     if (deg > 90 + camera.fov / 2 && deg < 360 - camera.fov / 2) deg = null;
   } else {
-    const t = controls.target;
-    deg = t.x > 0 && t.z > 0 ? Math.atan2(t.z, t.x) * 180 / Math.PI : null;
-    where = `Middle of the view over (${t.x.toFixed(1)}, ${t.z.toFixed(1)})`;
+    // the ground line through (0, 0) that the screen shows upright lies in the plane
+    // through the eye, (0, 0) and the camera's up; it is where that plane meets the ground
+    north.copy(camera.position).negate().cross(up.set(0, 1, 0).applyQuaternion(camera.quaternion));
+    north.set(-north.z, 0, north.x).normalize();
+    if (far.copy(north).multiplyScalar(50).project(camera).y < at0.set(0, 0, 0).project(camera).y) north.negate();
+    deg = Math.atan2(north.z, north.x) * 180 / Math.PI;
+    where = `Straight up the screen from (0, 0): ${deg.toFixed(1)}°`;
   }
-  let text;
+  let text, best = null, most = 0;
+  if (deg !== null && deg >= 0 && deg <= 90)
+    for (const r of PATHS) { const k = strength(deg, r); if (k > most) { most = k; best = r; } }
   if (deg === null || deg < 0 || deg > 90) {
     current = null; lane.visible = false;
     text = `${where}, looking away from the orchard`;
+  } else if (!best) {
+    current = null; lane.visible = false;
+    text = `${where} · no pathway up to ${LIMIT} : ${LIMIT} runs this way`;
   } else {
-    const at = r => Math.atan2(r[1], r[0]) * 180 / Math.PI;
-    const best = PATHS.reduce((a, r) => Math.abs(at(r) - deg) < Math.abs(at(a) - deg) ? r : a);
-    const [x, y] = best, off = deg - at(best);
+    const [x, y] = best, off = deg - Math.atan2(y, x) * 180 / Math.PI;
     if (!current || current.ray !== best) {
       current = { ray: best, sprite: names.children[PATHS.indexOf(best)] };
       lane.scale.x = ((N + 6) / Math.max(x, y) - 1) * Math.hypot(x, y);
@@ -749,9 +767,8 @@ function pointing() {
     }
     lane.visible = names.visible;
     lane.scale.z = standing ? 0.12 : 1;   // thin at the eye's feet
-    const side = Math.abs(off) < 0.05 ? 'dead on' : `${Math.abs(off).toFixed(2)}° ` +
-      (standing ? `to the ${off > 0 ? 'left' : 'right'}` : 'off');
-    text = `${where} · y/x = ${Math.tan(deg * Math.PI / 180).toFixed(3)} · looking along <b>${x} : ${y}</b>${ratioName(x, y)}, ${side}`;
+    const side = Math.abs(off) < 0.05 ? 'dead on' : `${Math.abs(off).toFixed(2)}° to the ${off > 0 ? 'left' : 'right'}`;
+    text = `${where} · y/x = ${Math.tan(deg * Math.PI / 180).toFixed(3)} · strongest pathway <b>${x} : ${y}</b>${ratioName(x, y)}, ${side}`;
   }
   if (text !== said) { facingEl.innerHTML = said = text; }
 }
