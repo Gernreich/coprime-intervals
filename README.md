@@ -132,9 +132,9 @@ The author found this ratio, π² : 6, independently at the age of 14.
 
 ![the view from (0,0) with a tree on every coprime pair](images/orchard.png)
 
-**[Walk round the orchard in 3D](https://gernreich.github.io/coprime-intervals/orchard.html)**:
+**[Walk round the orchard in 3D](https://gernreich.github.io/coprime-intervals/#orchard-3d)**:
 a tree on every coprime pair out to 100 × 100, to turn from above or to stand
-in at (0, 0).
+in at (0, 0), on the page just above the grid.
 
 `images/orchard.png`: stand at (0, 0) and put a thin tree, one unit tall, on
 every coprime pair out to distance 300, eye on the ground. This is

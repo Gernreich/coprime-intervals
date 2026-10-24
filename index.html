@@ -17,20 +17,21 @@
   --cell-off: #1d1d1c;
   --ray: #e34948;
   --pick: #eda100;
+  --sky: #dfeaf5;
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #6250d6;
   --s5: #e87ba4; --s6: #008300; --s7: #eda100; --s8: #e34948;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #1a1a19; --surface: #252523; --ink: #f0efec; --ink-2: #c3c2b7; --rule: #3a3a37;
-    --accent: #3987e5; --cell-on: #f0efec; --cell-off: #111110; --ray: #e66767; --pick: #c98500;
+    --accent: #3987e5; --cell-on: #f0efec; --cell-off: #111110; --ray: #e66767; --pick: #c98500; --sky: #1f2a35;
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #9085e9;
     --s5: #d55181; --s6: #008300; --s7: #c98500; --s8: #e66767;
   }
 }
 :root[data-theme="dark"] {
   --bg: #1a1a19; --surface: #252523; --ink: #f0efec; --ink-2: #c3c2b7; --rule: #3a3a37;
-  --accent: #3987e5; --cell-on: #f0efec; --cell-off: #111110; --ray: #e66767; --pick: #c98500;
+  --accent: #3987e5; --cell-on: #f0efec; --cell-off: #111110; --ray: #e66767; --pick: #c98500; --sky: #1f2a35;
   --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #9085e9;
   --s5: #d55181; --s6: #008300; --s7: #c98500; --s8: #e66767;
 }
@@ -86,6 +87,21 @@ h3 { font-size: 1.08rem; margin: 28px 0 4px; }
 .stars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .stars svg { width: 100%; aspect-ratio: 1; display: block; }
 #ford { width: 100%; display: block; }
+/* Euclid's orchard in 3D: as wide as the explorer */
+.orchard3d { width: min(1240px, calc(100vw - 48px)); margin-left: calc(50% - min(620px, 50vw - 24px)); margin-top: 12px; }
+#o-view { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: 78vh; border-radius: 6px;
+  background: var(--sky); touch-action: none; cursor: grab; }
+#o-view:active { cursor: grabbing; }
+.obar { background: var(--surface); border-radius: 6px; padding: 10px 16px; margin-top: 10px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; font-size: 0.92rem; }
+.obar button { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule);
+  border-radius: 4px; padding: 4px 12px; cursor: pointer; }
+.obar button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.obar button:focus-visible, .obar input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.obar label { display: inline-flex; align-items: center; gap: 6px; }
+.obar input[type=range] { width: 110px; }
+#o-readout { flex-basis: 100%; min-height: 1.6em; font-variant-numeric: tabular-nums; }
+#o-readout b { font-size: 1.05rem; }
 footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-2); }
 </style>
 </head>
@@ -146,6 +162,24 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <li><strong>Lissajous figures</strong> are the same drum seen from the side. Two tones a : b on an oscilloscope draw the wire, the closed figure is the one-strand Turk's head without the over and under, and a slight mistuning turns the drum. Tune exactly and it stands still; the simpler the interval, the simpler the figure.</li>
 </ul>
 
+<h2 id="orchard-3d">Euclid's orchard in 3D</h2>
+<p>A tree one unit tall on every light square of the grid below: every coprime pair (x, y) with x and y from 1 to 100, <span id="o-count">6,087</span> trees of the 10,000 points. Turn it from above, or stand at (0, 0) and look out: no tree hides another.</p>
+<div class="orchard3d">
+  <canvas id="o-view" tabindex="0" role="img" aria-label="Three-dimensional view of Euclid's orchard, a tree on every coprime pair from 1 to 100"></canvas>
+  <div class="obar">
+    <button id="o-above" aria-pressed="true">Turn it</button>
+    <button id="o-stand" aria-pressed="false">Stand at (0, 0)</button>
+    <label><input type="checkbox" id="o-hidden"> Show the hidden trees</label>
+    <label><input type="checkbox" id="o-octave"> Mark the octave</label>
+    <label><input type="checkbox" id="o-hue" checked> Colour by direction</label>
+    <label>Thickness <input type="range" id="o-thick" min="0.02" max="0.5" step="0.01" value="0.16"></label>
+    <label>Height <input type="range" id="o-tall" min="1" max="12" step="0.5" value="1"></label>
+    <div id="o-readout">Point at a tree.</div>
+  </div>
+  <div class="hint" id="o-hint"></div>
+</div>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction, as on the grid: the 1 : 1 diagonal is red and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+
 <h2>The grid and its rays</h2>
 <figure>
   <img src="images/grid-100.png" alt="100 by 100 coprime grid: white where coprime, black otherwise, with 29 coloured rays fanning out from the top-left corner" width="2000" height="2000" loading="lazy">
@@ -172,7 +206,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <p>The pattern repeats at every scale: each tall line stands in a gap with smaller arches either side. The gaps are real, since no fraction with a small denominator lies close to a simple one like 3/2, but their width here comes from stopping at denominator 60.</p>
 
 <h2 id="orchard">Standing in the orchard</h2>
-<p><strong><a href="orchard.html">Walk round the orchard in 3D</a></strong>: a tree on every coprime pair out to 100 × 100, to turn from above or to stand in at (0, 0).</p>
+<p>To walk round it, see <a href="#orchard-3d">Euclid's orchard in 3D</a> above.</p>
 <figure>
   <img src="images/orchard.png" alt="Panorama from the origin of thin trees on every coprime pair, tallest at 45 degrees, and below it the stretch between the trees at (1,2) and (1,2) with the musical intervals coloured" width="2437" height="1741" loading="lazy">
   <figcaption>Top: the view from (0, 0) with a thin tree, one unit tall, on every coprime pair out to distance 300, eye on the ground. Bottom: the stretch between the trees at (1, 1) and (1, 2), where the ratio y/x runs 1 to 2 left to right, just as the number line does.</figcaption>
@@ -441,6 +475,260 @@ Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Ger
   redrawStatic();
   update();
   setSpin(spinning);
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(() => {
+const N = 100;
+const canvas = document.getElementById('o-view');
+const readout = document.getElementById('o-readout');
+const hint = document.getElementById('o-hint');
+if (!window.THREE || !THREE.OrbitControls) { readout.textContent = 'The 3D view needs three.js, which did not load.'; return; }
+
+const gcd = (a, b) => { while (b) [a, b] = [b, a % b]; return a; };
+// Hue by direction, as ray_colour() in coprime_intervals.py: the 1:1 diagonal is red.
+const hueOf = (x, y) => ((((Math.atan2(y, x) * 180 / Math.PI) - 45) / 90 * 0.8) % 1 + 1) % 1;
+const INTERVALS = { '1/1': 'unison', '16/15': 'minor 2nd', '9/8': 'major 2nd', '6/5': 'minor 3rd',
+  '5/4': 'major 3rd', '4/3': 'perfect 4th', '7/5': 'septimal tritone', '45/32': 'tritone',
+  '3/2': 'perfect 5th', '8/5': 'minor 6th', '5/3': 'major 6th', '7/4': 'harmonic 7th',
+  '16/9': 'minor 7th', '9/5': 'minor 7th', '15/8': 'major 7th', '2/1': 'octave' };
+
+// orchard frame: x along three's x, y along three's z, so from above with -z up
+// the grid reads as on the main page, (1, 1) top left, x right, y down
+const seen = [], hid = [];
+for (let x = 1; x <= N; x++) for (let y = 1; y <= N; y++) (gcd(x, y) === 1 ? seen : hid).push([x, y]);
+document.getElementById('o-count').textContent = seen.length.toLocaleString('en');
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, 16 / 10, 0.01, 2000);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x4a5238, 0.7));
+const sun = new THREE.DirectionalLight(0xffffff, 0.7);
+sun.position.set(-60, 120, -30);
+scene.add(sun);
+
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(N + 1, N + 1),
+  new THREE.MeshStandardMaterial({ color: 0x5f6b48, roughness: 1 }));
+ground.rotation.x = -Math.PI / 2;
+ground.position.set((N + 1) / 2, 0, (N + 1) / 2);
+scene.add(ground);
+
+// one unit cylinder per tree, scaled to thickness and height
+const geo = new THREE.CylinderGeometry(0.5, 0.5, 1, 10);
+geo.translate(0, 0.5, 0);
+const treeMat = new THREE.MeshStandardMaterial({ roughness: 0.7 });
+const ghostMat = new THREE.MeshStandardMaterial({ color: 0x9a9a96, roughness: 0.9, transparent: true, opacity: 0.55 });
+const trees = new THREE.InstancedMesh(geo, treeMat, seen.length);
+const ghosts = new THREE.InstancedMesh(geo, ghostMat, hid.length);
+ghosts.visible = false;
+// r128 bounds an InstancedMesh by its one cylinder at the origin, so it would cull the lot
+trees.frustumCulled = ghosts.frustumCulled = false;
+scene.add(trees, ghosts);
+const green = new THREE.Color(0x2f5a34), col = new THREE.Color();
+function paint() {
+  const byHue = document.getElementById('o-hue').checked;
+  seen.forEach(([x, y], i) => trees.setColorAt(i, byHue ? col.setHSL(hueOf(x, y), 0.85, 0.47) : green));
+  trees.instanceColor.needsUpdate = true;
+}
+const m = new THREE.Matrix4();
+let W = 0.16, H = 1, standing = false;
+function plant() {
+  W = +document.getElementById('o-thick').value;
+  H = +document.getElementById('o-tall').value;
+  seen.forEach(([x, y], i) => trees.setMatrixAt(i, m.makeScale(W, H, W).setPosition(x, 0, y)));
+  hid.forEach(([x, y], i) => ghosts.setMatrixAt(i, m.makeScale(W, H, W).setPosition(x, 0, y)));
+  trees.instanceMatrix.needsUpdate = ghosts.instanceMatrix.needsUpdate = true;
+  if (standing) placeEye();
+}
+plant(); paint();
+
+// where you stand, and the octave's two rays, (1,1) and (1,2), on the ground
+const you = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.04, 24), new THREE.MeshBasicMaterial({ color: 0xe34948 }));
+you.position.set(0, 0.02, 0);
+scene.add(you);
+const octave = new THREE.Group();
+for (const [x, y] of [[1, 1], [1, 2]]) {
+  const k = N * 1.05 / Math.max(x, y);
+  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0.03, 0), new THREE.Vector3(x * k, 0.03, y * k)]);
+  octave.add(new THREE.Line(g, new THREE.LineBasicMaterial({ color: 0x1c5cab })));
+}
+const wedge = new THREE.Shape([new THREE.Vector2(0, 0), new THREE.Vector2(N * 1.05, N * 1.05), new THREE.Vector2(N * 0.525, N * 1.05)]);
+const wedgeMesh = new THREE.Mesh(new THREE.ShapeGeometry(wedge),
+  new THREE.MeshBasicMaterial({ color: 0x2a78d6, transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false }));
+wedgeMesh.rotation.x = Math.PI / 2;      // shape's (x, y) onto the ground's (x, z)
+wedgeMesh.position.y = 0.02;
+octave.add(wedgeMesh);
+octave.visible = false;
+scene.add(octave);
+
+// labels on the ground
+function label(text, x, z, size = 3) {
+  const c = document.createElement('canvas'), g = c.getContext('2d');
+  c.width = 256; c.height = 64;
+  g.font = '600 40px ui-sans-serif, -apple-system, system-ui, sans-serif';
+  g.fillStyle = '#8a8a84'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(text, 128, 32);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), depthWrite: false }));
+  s.scale.set(size * 4, size, 1);
+  s.position.set(x, 0.6, z);
+  scene.add(s);
+  return s;
+}
+const labels = [label('(0, 0)', -4, -3), label('x = 100', N, -4), label('y = 100', -6, N)];
+
+// --- turning it from above: OrbitControls pans; zoom toward the pointer and
+// double-click a tree to turn round it, as on the other viewers
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.enableZoom = false;
+controls.maxPolarAngle = Math.PI / 2 - 0.02;
+const HOME_T = new THREE.Vector3(44, 0, 44), HOME_C = new THREE.Vector3(-52, 50, -52);
+camera.position.copy(HOME_C); controls.target.copy(HOME_T);
+
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+function cast(cx, cy) {
+  const b = canvas.getBoundingClientRect();
+  ndc.set((cx - b.left) / b.width * 2 - 1, -(cy - b.top) / b.height * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+}
+function treeUnder(cx, cy) {   // [x, y, coprime?, point] of the tree under the pointer
+  cast(cx, cy);
+  const hit = ray.intersectObjects(ghosts.visible ? [trees, ghosts] : [trees])[0];
+  if (!hit) return null;
+  const [x, y] = (hit.object === trees ? seen : hid)[hit.instanceId];
+  return [x, y, hit.object === trees, hit.point];
+}
+function under(cx, cy) {   // a tree, else the ground, else the plane through the target
+  const t = treeUnder(cx, cy);
+  if (t) return t[3];
+  const g = ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), new THREE.Vector3());
+  if (g && g.distanceTo(camera.position) < 1500) return g;
+  const n = camera.getWorldDirection(new THREE.Vector3());
+  return ray.ray.intersectPlane(new THREE.Plane().setFromNormalAndCoplanarPoint(n, controls.target), new THREE.Vector3());
+}
+function zoom(s, cx, cy) {
+  if (standing) {   // standing still, zoom is the field of view
+    camera.fov = Math.max(4, Math.min(100, camera.fov * s));
+    camera.updateProjectionMatrix();
+    return;
+  }
+  const d = camera.position.distanceTo(controls.target), k = Math.max(2, Math.min(600, d * s)) / d;
+  const p = under(cx, cy) || controls.target.clone();
+  camera.position.sub(p).multiplyScalar(k).add(p);
+  controls.target.sub(p).multiplyScalar(k).add(p);
+}
+canvas.addEventListener('wheel', e => { e.preventDefault(); zoom(1 + Math.sign(e.deltaY) * 0.08, e.clientX, e.clientY); }, { passive: false });
+let pinch = 0;
+const gap = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+canvas.addEventListener('touchstart', e => { pinch = e.touches.length === 2 ? gap(e.touches) : 0; });
+canvas.addEventListener('touchmove', e => {
+  if (e.touches.length !== 2 || !pinch) return;
+  const g = gap(e.touches);
+  if (g) zoom(pinch / g, (e.touches[0].clientX + e.touches[1].clientX) / 2, (e.touches[0].clientY + e.touches[1].clientY) / 2);
+  pinch = g;
+});
+canvas.addEventListener('touchend', () => { pinch = 0; });
+function glide(target, cam) {
+  const t0 = controls.target.clone(), c0 = camera.position.clone(), start = performance.now();
+  const step = t => { const k = Math.min(1, (t - start) / 300), e = k * (2 - k);
+    controls.target.lerpVectors(t0, target, e); camera.position.lerpVectors(c0, cam, e);
+    if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+canvas.addEventListener('dblclick', e => {
+  if (standing) { yaw = 45; pitch = 4; camera.fov = 60; camera.updateProjectionMatrix(); look(); return; }
+  const t = treeUnder(e.clientX, e.clientY);
+  if (t) { glide(t[3], camera.position.clone().add(t[3]).sub(controls.target)); return; }
+  glide(HOME_T.clone(), HOME_C.clone());   // empty space: back to the opening view
+});
+
+// --- standing at (0, 0): drag looks round, the eye stays put
+let yaw = 45, pitch = 4, dragging = null;
+function placeEye() { camera.position.set(0.001, 0.3 * H, 0.001); look(); }
+function look() {
+  const a = yaw * Math.PI / 180, b = pitch * Math.PI / 180;
+  camera.lookAt(camera.position.x + Math.cos(b) * Math.cos(a), camera.position.y + Math.sin(b), camera.position.z + Math.cos(b) * Math.sin(a));
+}
+canvas.addEventListener('pointerdown', e => { if (standing) { dragging = [e.clientX, e.clientY]; canvas.setPointerCapture(e.pointerId); } });
+canvas.addEventListener('pointerup', () => { dragging = null; });
+canvas.addEventListener('pointermove', e => {
+  if (standing && dragging) {
+    const k = camera.fov / canvas.clientHeight;
+    yaw += (dragging[0] - e.clientX) * k;
+    pitch = Math.max(-80, Math.min(80, pitch - (dragging[1] - e.clientY) * k));
+    dragging = [e.clientX, e.clientY];
+    look();
+  }
+  if (!e.buttons) show(e.clientX, e.clientY);
+});
+canvas.addEventListener('pointerleave', () => { readout.textContent = 'Point at a tree.'; });
+
+const above = document.getElementById('o-above'), stand = document.getElementById('o-stand');
+const saved = { c: null, t: null };
+function mode(s) {
+  if (s === standing) return;
+  standing = s;
+  above.setAttribute('aria-pressed', !s); stand.setAttribute('aria-pressed', s);
+  controls.enabled = !s;
+  you.visible = !s;
+  labels.forEach(l => { l.visible = !s; });
+  if (s) {
+    saved.c = camera.position.clone(); saved.t = controls.target.clone();
+    yaw = 45; pitch = 4; camera.fov = 60; camera.near = 0.01;
+    placeEye();
+  } else {
+    camera.fov = 40;
+    camera.position.copy(saved.c); controls.target.copy(saved.t);
+    camera.lookAt(controls.target);
+  }
+  camera.updateProjectionMatrix();
+  setHint();
+}
+function setHint() {
+  hint.textContent = standing
+    ? 'Eye at (0, 0), a third of a tree up · drag to look round · scroll or pinch to narrow or widen the view · double-click to face the 1 : 1 diagonal again'
+    : 'Drag to turn · right-drag, shift-drag or two fingers to pan · scroll or pinch to zoom · double-click a tree to turn round it, empty space to go back';
+}
+setHint();
+above.addEventListener('click', () => mode(false));
+stand.addEventListener('click', () => mode(true));
+document.getElementById('o-hidden').addEventListener('change', e => { ghosts.visible = e.target.checked; });
+document.getElementById('o-octave').addEventListener('change', e => { octave.visible = e.target.checked; });
+document.getElementById('o-hue').addEventListener('change', paint);
+document.getElementById('o-thick').addEventListener('input', plant);
+document.getElementById('o-tall').addEventListener('input', plant);
+
+function show(cx, cy) {
+  const t = treeUnder(cx, cy);
+  if (!t) { readout.textContent = 'Point at a tree.'; return; }
+  const [x, y, ok] = t, d = gcd(x, y), p = Math.max(x, y) / d, q = Math.min(x, y) / d;
+  const bearing = (Math.atan2(y, x) * 180 / Math.PI).toFixed(1);
+  const name = INTERVALS[p + '/' + q];
+  readout.innerHTML = `<b>(${x}, ${y})</b> · bearing ${bearing}° · ratio ${p} : ${q}` + (name ? ` (${name})` : '') + ' · ' +
+    (ok ? 'coprime: seen from (0, 0)' : `common factor ${d}: hidden behind the tree at (${x / d}, ${y / d})`);
+}
+
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (canvas.width !== Math.round(w * renderer.getPixelRatio())) {
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+}
+let onScreen = false;
+new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; }).observe(canvas);
+(function frame() {
+  if (onScreen) {
+    resize();
+    if (!standing) controls.update();
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(frame);
+})();
 })();
 </script>
 </body>
