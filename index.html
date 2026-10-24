@@ -100,7 +100,8 @@ h3 { font-size: 1.08rem; margin: 28px 0 4px; }
 .obar button:focus-visible, .obar input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .obar label { display: inline-flex; align-items: center; gap: 6px; }
 .obar input[type=range] { width: 110px; }
-#o-readout { flex-basis: 100%; min-height: 1.6em; font-variant-numeric: tabular-nums; }
+#o-facing:empty { display: none; }
+#o-facing, #o-readout { flex-basis: 100%; min-height: 1.6em; font-variant-numeric: tabular-nums; }
 #o-readout b { font-size: 1.05rem; }
 footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-2); }
 </style>
@@ -172,13 +173,15 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     <label><input type="checkbox" id="o-hidden"> Show the hidden trees</label>
     <label><input type="checkbox" id="o-octave"> Mark the octave</label>
     <label><input type="checkbox" id="o-hue" checked> Colour by direction</label>
+    <label><input type="checkbox" id="o-names" checked> Name the pathways</label>
     <label>Thickness <input type="range" id="o-thick" min="0.02" max="0.5" step="0.01" value="0.16"></label>
     <label>Height <input type="range" id="o-tall" min="1" max="12" step="0.5" value="1"></label>
+    <div id="o-facing"></div>
     <div id="o-readout">Point at a tree.</div>
   </div>
   <div class="hint" id="o-hint"></div>
 </div>
-<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction, as on the grid: the 1 : 1 diagonal is red and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
+<p>A point with a common factor d, such as (6, 4), gets no tree: from (0, 0) it lies straight behind the tree at (3, 2), on the same ray and farther out. Tick <em>Show the hidden trees</em> to plant them in grey, then <em>Stand at (0, 0)</em>: the grey ones vanish behind the coloured ones. Colour is direction, as on the grid: the 1 : 1 diagonal is red and each ray keeps one hue. <em>Mark the octave</em> shades the ground between the rays through (1, 1) and (1, 2), where every ratio y/x from 1 to 2 goes by in order. <em>Name the pathways</em> writes x : y on the horizon at the far end of each ray drawn on the grid below: past its first tree a ray holds only hidden points, so from above it is an empty lane running out of the corner. A name that would overlap a simpler one waits until you zoom in. Standing at (0, 0), the line above the readout says which pathway the middle of the view looks along. Thicken the trees and the far ones close into a wall along the horizon; thin them and avenues open beside every near tree. <a href="#orchard">Standing in the orchard</a>, below, says why.</p>
 
 <h2>The grid and its rays</h2>
 <figure>
@@ -579,6 +582,50 @@ function label(text, x, z, size = 3) {
 }
 const labels = [label('(0, 0)', -4, -3), label('x = 100', N, -4), label('y = 100', -6, N)];
 
+// the pathways: the rays drawn on the grid figure (RAYS in coprime_intervals.py,
+// coprime, both steps at most 7, the smaller at most 4). Past its first tree each
+// ray holds only hidden points, so from above it is an empty lane and from (0, 0)
+// a line of sight. Each is named x : y on the horizon, where the lane leaves the
+// square, the same size on screen however far; declutter() hides any that would
+// overlap a simpler one, so zooming in brings the rest out.
+const RAYS = [];
+for (let x = 1; x <= 7; x++) for (let y = 1; y <= 7; y++) if (gcd(x, y) === 1 && Math.min(x, y) <= 4) RAYS.push([x, y]);
+const names = new THREE.Group();
+RAYS.sort((a, b) => a[0] + a[1] - b[0] - b[1] || Math.max(...a) - Math.max(...b));   // simplest first
+for (const [x, y] of RAYS) {
+  const c = document.createElement('canvas'), g = c.getContext('2d');
+  c.width = 128; c.height = 64;
+  g.font = '700 38px ui-sans-serif, -apple-system, system-ui, sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.lineWidth = 7; g.lineJoin = 'round'; g.strokeStyle = 'rgba(16, 16, 15, 0.85)';
+  g.strokeText(`${x}:${y}`, 64, 34);
+  g.fillStyle = '#' + col.setHSL(hueOf(x, y), 0.85, 0.62).getHexString();
+  g.fillText(`${x}:${y}`, 64, 34);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), sizeAttenuation: false, depthTest: false }));
+  const k = (N + 6) / Math.max(x, y);
+  sp.position.set(x * k, 0, y * k);
+  sp.renderOrder = 1;
+  sp.userData.ray = [x, y];
+  names.add(sp);
+}
+scene.add(names);
+const box = [], at = new THREE.Vector3();
+let tag = 0.035;   // label height as a share of the view at distance 1: larger when standing
+function declutter() {
+  if (!names.visible) return;
+  const h = tag / (2 * Math.tan(camera.fov * Math.PI / 360)) * canvas.clientHeight, w = 2 * h;   // label size in pixels
+  box.length = 0;
+  for (const sp of names.children) {
+    at.copy(sp.position).project(camera);
+    const x = (at.x + 1) / 2 * canvas.clientWidth, y = (1 - at.y) / 2 * canvas.clientHeight - (0.5 - sp.center.y) * h;
+    const r = [x - w * 0.42, y - h * 0.4, x + w * 0.42, y + h * 0.4];
+    sp.scale.set(2 * tag, tag, 1);
+    sp.visible = at.z < 1 && !box.some(b => r[0] < b[2] && b[0] < r[2] && r[1] < b[3] && b[1] < r[3]);
+    if (sp.visible) box.push(r);
+  }
+}
+document.getElementById('o-names').addEventListener('change', e => { names.visible = e.target.checked; });
+
 // --- turning it from above: OrbitControls pans; zoom toward the pointer and
 // double-click a tree to turn round it, as on the other viewers
 const controls = new THREE.OrbitControls(camera, canvas);
@@ -647,10 +694,34 @@ canvas.addEventListener('dblclick', e => {
 
 // --- standing at (0, 0): drag looks round, the eye stays put
 let yaw = 45, pitch = 4, dragging = null;
-function placeEye() { camera.position.set(0.001, 0.3 * H, 0.001); look(); }
+function placeEye() {
+  camera.position.set(0.001, 0.3 * H, 0.001);
+  names.children.forEach(sp => { sp.position.y = camera.position.y; sp.center.set(0.5, -0.1); });   // standing on the horizon
+  tag = 0.06;
+  look();
+}
 function look() {
   const a = yaw * Math.PI / 180, b = pitch * Math.PI / 180;
   camera.lookAt(camera.position.x + Math.cos(b) * Math.cos(a), camera.position.y + Math.sin(b), camera.position.z + Math.cos(b) * Math.sin(a));
+  facing();
+}
+// which pathway the middle of the view looks along: y/x is the tangent of the bearing
+const facingEl = document.getElementById('o-facing');
+function ratioName(x, y) {
+  const n = INTERVALS[Math.max(x, y) + '/' + Math.min(x, y)];
+  return n ? ` (${n})` : '';
+}
+function facing() {
+  if (!standing) { facingEl.textContent = ''; return; }
+  const deg = ((yaw % 360) + 360) % 360;
+  if (deg > 90 + camera.fov / 2 && deg < 360 - camera.fov / 2) { facingEl.innerHTML = `Facing ${deg.toFixed(1)}°, away from the orchard`; return; }
+  const at = r => Math.atan2(r[1], r[0]) * 180 / Math.PI;
+  const best = RAYS.reduce((a, r) => Math.abs(at(r) - deg) < Math.abs(at(a) - deg) ? r : a);
+  const off = deg - at(best);
+  const [x, y] = best;
+  facingEl.innerHTML = `Facing ${deg.toFixed(1)}°, y/x = ${Math.tan(deg * Math.PI / 180).toFixed(3)} · ` +
+    (Math.abs(off) < 0.25 ? `straight down the <b>${x} : ${y}</b> pathway${ratioName(x, y)}, past the tree at (${x}, ${y})`
+      : `nearest pathway <b>${x} : ${y}</b>${ratioName(x, y)}, ${Math.abs(off).toFixed(1)}° to the ${off > 0 ? 'left' : 'right'}`);
 }
 canvas.addEventListener('pointerdown', e => { if (standing) { dragging = [e.clientX, e.clientY]; canvas.setPointerCapture(e.pointerId); } });
 canvas.addEventListener('pointerup', () => { dragging = null; });
@@ -680,12 +751,15 @@ function mode(s) {
     yaw = 45; pitch = 4; camera.fov = 60; camera.near = 0.01;
     placeEye();
   } else {
+    names.children.forEach(sp => { sp.position.y = 0; sp.center.set(0.5, 0.5); });   // flat at the end of each lane
+    tag = 0.035;
     camera.fov = 40;
     camera.position.copy(saved.c); controls.target.copy(saved.t);
     camera.lookAt(controls.target);
   }
   camera.updateProjectionMatrix();
   setHint();
+  facing();
 }
 function setHint() {
   hint.textContent = standing
@@ -725,6 +799,7 @@ new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; }).observe(canv
   if (onScreen) {
     resize();
     if (!standing) controls.update();
+    declutter();
     renderer.render(scene, camera);
   }
   requestAnimationFrame(frame);
