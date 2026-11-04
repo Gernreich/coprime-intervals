@@ -281,3 +281,7 @@ Also suggested by Claude and not the author's, left as links:
 ## Licence
 
 [CC0 1.0](LICENSE): public domain.
+
+## Credits
+
+The idea is Michael Gernreich's; [Claude](https://www.anthropic.com/claude) (Anthropic), working in Claude Code, co-wrote the code and the documentation that present it. Commits Claude made carry a `Co-Authored-By: Claude` line.
