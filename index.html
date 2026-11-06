@@ -110,7 +110,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <body>
 <main>
 <h1>Coprime pairs and musical intervals</h1>
-<p style="margin:0 0 12px;font-size:0.95rem"><strong><a href="https://gernreich.github.io/">← All projects</a></strong></p>
+<p style="margin:0 0 12px;font-size:0.95rem"><strong><a href="https://gernreich.github.io/" target="_blank" rel="noopener">← All projects</a></strong></p>
 <p class="lede">A pair of whole numbers (x, y) is <strong>coprime</strong> when gcd(x, y) = 1, that is, when x/y is already in lowest terms. On a grid the coprime pairs form rays out of the corner. As knots, they are the Turk's heads that tie with one strand. On a number line from 1 to 2, they are the intervals inside one octave. On an oscilloscope, they are the Lissajous figures. Standing at the corner, they are the trees you can see.</p>
 
 <p class="credit"><strong>Whose ideas these are.</strong> The author came up with the connections on this page independently: the coprime grid and its rays, the number line with heights 1/(p² + q²) and its match to the musical intervals, Turk's head knots, turning Lissajous figures, the view from the orchard, the width of its pathways as the strength of a consonance, and the ratio π² : 6 (at the age of 14). Some had been found before by others, and the page names them where known (Euclid's orchard, Thomae's function, Pólya, Tenney, Euler, Ptolemy, Helmholtz) for history and comparison. The last section, <a href="#further">Further connections</a>, is different: none of it is the author's.</p>
@@ -216,14 +216,14 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <h2>The grid and its rays</h2>
 <figure>
   <img src="images/grid-100.png" alt="100 by 100 coprime grid: white where coprime, black otherwise, with 29 coloured rays fanning out from the top-left corner" width="2000" height="2000" loading="lazy">
-  <figcaption>100 × 100 pairs. The 29 rays with both steps at most 7 and the smaller at most 4 are drawn solid, coloured by angle; the red one is the diagonal. <a href="images/grid-3840x2160.png">The same grid at one pixel per pair</a>, the size of a 4K screen.</figcaption>
+  <figcaption>100 × 100 pairs. The 29 rays with both steps at most 7 and the smaller at most 4 are drawn solid, coloured by angle; the red one is the diagonal. <a href="images/grid-3840x2160.png" target="_blank" rel="noopener">The same grid at one pixel per pair</a>, the size of a 4K screen.</figcaption>
 </figure>
 <p>Take any step p across and q down with gcd(p, q) = 1. The points (2p, 2q), (3p, 3q), (4p, 4q)… have gcd 2, 3, 4…, so every one of them is dark: each coprime step makes a dark ray out of the corner (0, 0). The first point, (p, q) itself, is light. The 1:1 ray is the diagonal. Lines drawn from (1, 1) instead of (0, 0) come out light: (1 + 2k, 1 + k), for example, always has gcd 1.</p>
 
 <h2>Turk's head knots</h2>
 <p>A Turk's head knot is described by its <strong>leads</strong>, the number of times the strand passes round, and its <strong>bights</strong>, the scallops at each edge. A Turk's head with L leads and B bights ties with a single strand exactly when gcd(L, B) = 1. Otherwise it falls apart into gcd(L, B) separate loops.</p>
 <p>So the light squares of the grid are the Turk's heads that work, read as x leads and y bights. The dark rays are the ones that don't: the point k·(p, q) on a ray makes k separate strands, each tracing the (p, q) pattern turned a little. The explorer above draws each strand in its own colour.</p>
-<p>The <a href="https://gernreich.github.io/knotwork-soundholes/">knotwork sound-hole generators</a> use exactly this rule: the single-strand generator takes any leads × bights and refuses a pair that isn't coprime.</p>
+<p>The <a href="https://gernreich.github.io/knotwork-soundholes/" target="_blank" rel="noopener">knotwork sound-hole generators</a> use exactly this rule: the single-strand generator takes any leads × bights and refuses a pair that isn't coprime.</p>
 
 <h2>6/π²</h2>
 <p>In the 11 × 11 grid above, 83 of the 121 squares are light, about 69%. As the grid grows, the share tends to 6/π² ≈ 60.79%: the probability that two random whole numbers are coprime. It is 1/ζ(2), where ζ(2) = 1 + 1/4 + 1/9 + 1/16 + … = π²/6. In the 3840 × 2160 grid the share is 60.80%.</p>
@@ -335,18 +335,18 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 <h3>More to look at</h3>
 <p>Also suggested by Claude and not the author's, left as links:</p>
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Torus_knot">Torus knots</a>: the Turk's head rule on a doughnut.</li>
-<li><a href="https://en.wikipedia.org/wiki/Spirograph">Spirographs</a>: patterns that close after a number of turns set by the gear ratio.</li>
-<li><a href="https://en.wikipedia.org/wiki/Continued_fraction">Continued fractions</a> and <a href="https://en.wikipedia.org/wiki/12_equal_temperament">12 equal temperament</a>: why the piano has 12 notes.</li>
-<li><a href="https://en.wikipedia.org/wiki/Tonnetz">The Tonnetz</a>: Euler's grid of notes.</li>
-<li><a href="https://en.wikipedia.org/wiki/Dynamical_billiards">Billiards</a>: a ball's path in an a × b box.</li>
-<li><a href="https://en.wikipedia.org/wiki/Phyllotaxis">Phyllotaxis</a> and <a href="https://en.wikipedia.org/wiki/Golden_ratio">the golden ratio</a>: sunflower spirals, and the number furthest from every fraction.</li>
+<li><a href="https://en.wikipedia.org/wiki/Torus_knot" target="_blank" rel="noopener">Torus knots</a>: the Turk's head rule on a doughnut.</li>
+<li><a href="https://en.wikipedia.org/wiki/Spirograph" target="_blank" rel="noopener">Spirographs</a>: patterns that close after a number of turns set by the gear ratio.</li>
+<li><a href="https://en.wikipedia.org/wiki/Continued_fraction" target="_blank" rel="noopener">Continued fractions</a> and <a href="https://en.wikipedia.org/wiki/12_equal_temperament" target="_blank" rel="noopener">12 equal temperament</a>: why the piano has 12 notes.</li>
+<li><a href="https://en.wikipedia.org/wiki/Tonnetz" target="_blank" rel="noopener">The Tonnetz</a>: Euler's grid of notes.</li>
+<li><a href="https://en.wikipedia.org/wiki/Dynamical_billiards" target="_blank" rel="noopener">Billiards</a>: a ball's path in an a × b box.</li>
+<li><a href="https://en.wikipedia.org/wiki/Phyllotaxis" target="_blank" rel="noopener">Phyllotaxis</a> and <a href="https://en.wikipedia.org/wiki/Golden_ratio" target="_blank" rel="noopener">the golden ratio</a>: sunflower spirals, and the number furthest from every fraction.</li>
 </ul>
 
 <footer>
-Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Gernreich/coprime-intervals">coprime-intervals repository</a>. Public domain (CC0 1.0).
+Made by <code>coprime_intervals.py</code> in the <a href="https://github.com/Gernreich/coprime-intervals" target="_blank" rel="noopener">coprime-intervals repository</a>. Public domain (CC0 1.0).
 </footer>
-<p class="credit" style="margin-top:2em;font-size:0.85em;opacity:0.75">The idea is Michael Gernreich's; <a href="https://www.anthropic.com/claude">Claude</a> (Anthropic), working in Claude Code, co-wrote the code and the documentation that present it. Commits Claude made carry a <code>Co-Authored-By: Claude</code> line.</p>
+<p class="credit" style="margin-top:2em;font-size:0.85em;opacity:0.75">The idea is Michael Gernreich's; <a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Claude</a> (Anthropic), working in Claude Code, co-wrote the code and the documentation that present it. Commits Claude made carry a <code>Co-Authored-By: Claude</code> line.</p>
 </main>
 
 <script>
